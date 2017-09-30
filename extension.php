@@ -23,6 +23,8 @@ class RedditImageExtension extends Minz_Extension {
 		// Add image tag in content when the href links to an image
 		if (preg_match('/(jpg|png|gif|bmp)$/', $href)) {
 			$entry->_content(sprintf('%s <img src="%s" />', $content, $href));
+		} else {
+			$entry->_content(sprintf('%s <p>%s</p>', $content, $href));
 		}
 		
 		return $entry;
