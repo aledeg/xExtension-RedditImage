@@ -2,7 +2,7 @@
 
 class RedditImageExtension extends Minz_Extension {
 	public function init() {
-		$this->registerHook('entry_before_display', array($this, 'transformLink'));
+		$this->registerHook('entry_before_insert', array($this, 'transformLink'));
 	}
 	
 	public function transformLink($entry) {
