@@ -8,7 +8,7 @@ class RedditImageExtension extends Minz_Extension {
 	public function transformLink($entry) {
 		$link = $entry->link();
 
-		if (false === strpos('reddit.com', $link)) {
+		if (false === strpos($link, 'reddit.com')) {
 			return $entry;
 		}
 		
