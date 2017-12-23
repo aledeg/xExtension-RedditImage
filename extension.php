@@ -31,10 +31,10 @@ class RedditImageExtension extends Minz_Extension {
 			$entry->_content(sprintf('<img src="%2$s.png" class="reddit-image" alt="IMGUR TOKEN" /> %1$s', $content, $href));
 		// Add video tag in content when the href links to a video
 		} elseif (preg_match('#(?P<extension>webm|mp4)$#', $href, $matches)) {
-			$entry->_content(sprintf('<video controls><source src="%2$s" type="video/%3$s">VIDEO URL</video> %1$s', $content, $href, $matches['extension']));
+			$entry->_content(sprintf('<video controls class="reddit-image"><source src="%2$s" type="video/%3$s">VIDEO URL</video> %1$s', $content, $href, $matches['extension']));
 		// Add video tag in content when the href links to a gfycat video
 		} elseif (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/.]*)$#', $href, $matches)) {
-			$entry->_content(sprintf('<video controls><source src="https://giant.%2$s%3$s.mp4" type="video/mp4">GFYCAT TOKEN</video> %1$s', $content, $matches['gfycat'], $matches['token']));
+			$entry->_content(sprintf('<video controls class="reddit-image"><source src="https://giant.%2$s%3$s.mp4" type="video/mp4">GFYCAT TOKEN</video> %1$s', $content, $matches['gfycat'], $matches['token']));
 		} else {
 			$entry->_content(sprintf('%s <p>%s</p>', $content, $href));
 		}
