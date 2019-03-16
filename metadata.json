@@ -1,8 +1,8 @@
 {
 	"name": "Reddit Image",
 	"author": "Alexis Degrugillier",
-	"description": "Replace the link to the Reddit topic with the link to the resource",
-	"version": 0.1,
+	"description": "Modify reddit entries by ease access to the linked resource",
+	"version": 0.2,
 	"entrypoint": "RedditImage",
 	"type": "user"
 }
