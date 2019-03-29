@@ -2,7 +2,7 @@
 
 class RedditImageExtension extends Minz_Extension {
     const IMAGE_CONTENT = '<div class="reddit-image figure"><a href="%1$s"><img src="%1$s" class="reddit-image"/></a><p class="caption"><a href="%2$s">Comments</a></p></div>';
-    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls class="reddit-image"><source src="%1$s" type="video/%2$s"><p class="caption"><a href="%3$s">Comments</a></p></div></video>';
+    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls class="reddit-image"><source src="%1$s" type="video/%2$s"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
     const LINK_CONTENT = '%1$s<p><a href="%2$s">%2$s</a></p>';
     const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
     const MATCH_REDDIT = 'reddit.com';
