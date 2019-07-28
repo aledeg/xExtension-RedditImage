@@ -7,9 +7,46 @@ class RedditImageExtension extends Minz_Extension {
     const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
     const MATCH_REDDIT = 'reddit.com';
 
+    const DEFAULT_HEIGHT = 70;
+
     public function init() {
+        $this->registerTranslates();
+
+        $current_user = Minz_Session::param('currentUser');
+        $filename = 'style.' . $current_user . '.css';
+        $filepath = join_path($this->getPath(), 'static', $filename);
+
+        if (file_exists($filepath)) {
+            Minz_View::appendStyle($this->getFileUrl($filename, 'css'));
+        }
+
         $this->registerHook('entry_before_display', array($this, 'transformEntry'));
         $this->registerHook('entry_before_insert', array($this, 'updateGfycatLink'));
+    }
+
+    public function handleConfigureAction() {
+        $this->registerTranslates();
+
+        $current_user = Minz_Session::param('currentUser');
+        $filename = 'configuration.' . $current_user . '.json';
+        $filepath = join_path($this->getPath(), 'static', $filename);
+
+        if (Minz_Request::isPost()) {
+            $configuration = array(
+                'imageHeight' => (int) Minz_Request::param('image-height', static::DEFAULT_HEIGHT),
+            );
+            file_put_contents($filepath, json_encode($configuration));
+            file_put_contents(join_path($this->getPath(), 'static', "style.{$current_user}.css"), sprintf(
+                'img.reddit-image, video.reddit-image {max-height:%svh;}',
+                $configuration['imageHeight']
+            ));
+        }
+
+        $this->image_height = static::DEFAULT_HEIGHT;
+        if (file_exists($filepath)) {
+            $configuration = json_decode(file_get_contents($filepath), true);
+            $this->image_height = $configuration['imageHeight'];
+        }
     }
 
     public function transformEntry($entry) {
