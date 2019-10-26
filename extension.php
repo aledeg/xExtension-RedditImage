@@ -35,7 +35,7 @@ class RedditImageExtension extends Minz_Extension {
         if (Minz_Request::isPost()) {
             $configuration = array(
                 'imageHeight' => (int) Minz_Request::param('image-height', static::DEFAULT_HEIGHT),
-                'mutedVideo' => Minz_Request::paramBoolean('muted-video'),
+                'mutedVideo' => (bool) Minz_Request::param('muted-video'),
             );
             file_put_contents($filepath, json_encode($configuration));
             file_put_contents(join_path($this->getPath(), 'static', "style.{$current_user}.css"), sprintf(
