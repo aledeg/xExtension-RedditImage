@@ -2,12 +2,13 @@
 
 class RedditImageExtension extends Minz_Extension {
     const IMAGE_CONTENT = '<div class="reddit-image figure"><a href="%1$s"><img src="%1$s" class="reddit-image"/></a><p class="caption"><a href="%2$s">Comments</a></p></div>';
-    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls class="reddit-image"><source src="%1$s" type="video/%2$s"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
+    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="metadata" %4$s class="reddit-image"><source src="%1$s" type="video/%2$s"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
     const LINK_CONTENT = '%1$s<p><a href="%2$s">%2$s</a></p>';
     const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
     const MATCH_REDDIT = 'reddit.com';
 
     const DEFAULT_HEIGHT = 70;
+    const DEFAULT_MUTEDVIDEO = true;
 
     public function init() {
         $this->registerTranslates();
@@ -34,6 +35,7 @@ class RedditImageExtension extends Minz_Extension {
         if (Minz_Request::isPost()) {
             $configuration = array(
                 'imageHeight' => (int) Minz_Request::param('image-height', static::DEFAULT_HEIGHT),
+                'mutedVideo' => Minz_Request::paramBoolean('muted-video'),
             );
             file_put_contents($filepath, json_encode($configuration));
             file_put_contents(join_path($this->getPath(), 'static', "style.{$current_user}.css"), sprintf(
@@ -42,11 +44,7 @@ class RedditImageExtension extends Minz_Extension {
             ));
         }
 
-        $this->image_height = static::DEFAULT_HEIGHT;
-        if (file_exists($filepath)) {
-            $configuration = json_decode(file_get_contents($filepath), true);
-            $this->image_height = $configuration['imageHeight'];
-        }
+        $this->getConfiguration();
     }
 
     public function transformEntry($entry) {
@@ -57,6 +55,8 @@ class RedditImageExtension extends Minz_Extension {
         if (null === $href = $this->getContentLink($entry)) {
             return $entry;
         }
+
+        $this->getConfiguration();
 
         // Add image tag in content when the href links to an image
         if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
@@ -89,6 +89,8 @@ class RedditImageExtension extends Minz_Extension {
         if (null === $href = $this->getContentLink($entry)) {
             return $entry;
         }
+
+        $this->getConfiguration();
 
         if (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/.]*)$#', $href, $matches)) {
             try {
@@ -126,10 +128,32 @@ class RedditImageExtension extends Minz_Extension {
     }
 
     private function addVideoContent($entry, $href, $extension) {
-        $entry->_content(sprintf(static::VIDEO_CONTENT, $href, $extension, $entry->link()));
+        $entry->_content(sprintf(static::VIDEO_CONTENT, $href, $extension, $entry->link(), $this->muted_video ? 'muted': ''));
     }
 
     private function addLinkContent($entry, $href) {
         $entry->_content(sprintf(static::LINK_CONTENT, $entry->content(), $href));
+    }
+
+    private function getConfiguration() {
+        if (null !== $this->image_height && null !== $this->muted_video) {
+            return;
+        }
+
+        $current_user = Minz_Session::param('currentUser');
+        $filename = 'configuration.' . $current_user . '.json';
+        $filepath = join_path($this->getPath(), 'static', $filename);
+
+        $this->image_height = static::DEFAULT_HEIGHT;
+        $this->muted_video = static::DEFAULT_MUTEDVIDEO;
+        if (file_exists($filepath)) {
+            $configuration = json_decode(file_get_contents($filepath), true);
+            if (array_key_exists('imageHeight', $configuration)) {
+                $this->image_height = $configuration['imageHeight'];
+            }
+            if (array_key_exists('mutedVideo', $configuration)) {
+                $this->muted_video = $configuration['mutedVideo'];
+            }
+        }
     }
 }
