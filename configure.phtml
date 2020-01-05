@@ -8,9 +8,11 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="group-name" for="muted-video"><?php echo _t('ext.reddit_image.muted_video'); ?></label>
 		<div class="group-controls">
-            <input type="checkbox" name="muted-video" id="muted-video" value="1" <?= $this->muted_video ? 'checked=true' : '' ?>/>
+			<label class="checkbox" for="muted-video">
+				<input type="checkbox" name="muted-video" id="muted-video" value="1" <?= $this->muted_video ? 'checked=true' : '' ?>/>
+				<?= _t('ext.reddit_image.muted_video'); ?>
+			</label>
 		</div>
 	</div>
 
