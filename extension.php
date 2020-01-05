@@ -9,6 +9,8 @@ class RedditImageExtension extends Minz_Extension {
 
     const DEFAULT_HEIGHT = 70;
     const DEFAULT_MUTEDVIDEO = true;
+    const DEFAULT_DISPLAYIMAGE = true;
+    const DEFAULT_DISPLAYVIDEO = true;
 
     public function init() {
         $this->registerTranslates();
@@ -36,6 +38,8 @@ class RedditImageExtension extends Minz_Extension {
             $configuration = array(
                 'imageHeight' => (int) Minz_Request::param('image-height', static::DEFAULT_HEIGHT),
                 'mutedVideo' => (bool) Minz_Request::param('muted-video'),
+                'displayImage' => (bool) Minz_Request::param('display-image'),
+                'displayVideo' => (bool) Minz_Request::param('display-video'),
             );
             file_put_contents($filepath, json_encode($configuration));
             file_put_contents(join_path($this->getPath(), 'static', "style.{$current_user}.css"), sprintf(
@@ -124,10 +128,16 @@ class RedditImageExtension extends Minz_Extension {
     }
 
     private function addImageContent($entry, $href) {
+        if (!$this->display_image) {
+            return;
+        }
         $entry->_content(sprintf(static::IMAGE_CONTENT,$href, $entry->link()));
     }
 
     private function addVideoContent($entry, $baseUrl) {
+        if (!$this->display_video) {
+            return;
+        }
         $hrefMp4 = $baseUrl . 'mp4';
         $hrefWebm = $baseUrl . 'webm';
         $entry->_content(sprintf(static::VIDEO_CONTENT, $hrefWebm, $hrefMp4, $entry->link(), $this->muted_video ? 'muted': ''));
@@ -138,7 +148,7 @@ class RedditImageExtension extends Minz_Extension {
     }
 
     private function getConfiguration() {
-        if (null !== $this->image_height && null !== $this->muted_video) {
+        if ($this->hasConfiguration()) {
             return;
         }
 
@@ -148,6 +158,8 @@ class RedditImageExtension extends Minz_Extension {
 
         $this->image_height = static::DEFAULT_HEIGHT;
         $this->muted_video = static::DEFAULT_MUTEDVIDEO;
+        $this->display_image = static::DEFAULT_DISPLAYIMAGE;
+        $this->display_video = static::DEFAULT_DISPLAYVIDEO;
         if (file_exists($filepath)) {
             $configuration = json_decode(file_get_contents($filepath), true);
             if (array_key_exists('imageHeight', $configuration)) {
@@ -156,6 +168,21 @@ class RedditImageExtension extends Minz_Extension {
             if (array_key_exists('mutedVideo', $configuration)) {
                 $this->muted_video = $configuration['mutedVideo'];
             }
+            if (array_key_exists('displayImage', $configuration)) {
+                $this->display_image = $configuration['displayImage'];
+            }
+            if (array_key_exists('displayVideo', $configuration)) {
+                $this->display_video = $configuration['displayVideo'];
+            }
         }
+    }
+
+    private function hasConfiguration() {
+        return (
+            isset($this->image_height) && null !== $this->image_height &&
+            isset($this->muted_video) && null !== $this->muted_video &&
+            isset($this->display_image) && null !== $this->display_image &&
+            isset($this->display_video) && null !== $this->display_video
+        );
     }
 }
