@@ -2,7 +2,7 @@
 
 class RedditImageExtension extends Minz_Extension {
     const IMAGE_CONTENT = '<div class="reddit-image figure"><a href="%1$s"><img src="%1$s" class="reddit-image"/></a><p class="caption"><a href="%2$s">Comments</a></p></div>';
-    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="metadata" %4$s class="reddit-image"><source src="%1$s" type="video/%2$s"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
+    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="none" %4$s class="reddit-image"><source src="%1$s" type="video/webm"><source src="%2$s" type="video/mp4"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
     const LINK_CONTENT = '%1$s<p><a href="%2$s">%2$s</a></p>';
     const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
     const MATCH_REDDIT = 'reddit.com';
@@ -70,8 +70,8 @@ class RedditImageExtension extends Minz_Extension {
             $href = "${href}.png";
             $this->addImageContent($entry, $href);
         // Add video tag in content when the href links to a video
-        } elseif (preg_match('#(?P<extension>webm|mp4)$#', $href, $matches)) {
-            $this->addVideoContent($entry, $href, $matches['extension']);
+        } elseif (preg_match('#(?P<baseurl>.+)(webm|mp4)$#', $href, $matches)) {
+            $this->addVideoContent($entry, $matches['baseurl']);
         } else {
             $this->addLinkContent($entry, $href);
         }
@@ -127,8 +127,10 @@ class RedditImageExtension extends Minz_Extension {
         $entry->_content(sprintf(static::IMAGE_CONTENT,$href, $entry->link()));
     }
 
-    private function addVideoContent($entry, $href, $extension) {
-        $entry->_content(sprintf(static::VIDEO_CONTENT, $href, $extension, $entry->link(), $this->muted_video ? 'muted': ''));
+    private function addVideoContent($entry, $baseUrl) {
+        $hrefMp4 = $baseUrl . 'mp4';
+        $hrefWebm = $baseUrl . 'webm';
+        $entry->_content(sprintf(static::VIDEO_CONTENT, $hrefWebm, $hrefMp4, $entry->link(), $this->muted_video ? 'muted': ''));
     }
 
     private function addLinkContent($entry, $href) {
