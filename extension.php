@@ -2,7 +2,7 @@
 
 class RedditImageExtension extends Minz_Extension {
     const IMAGE_CONTENT = '<div class="reddit-image figure"><a href="%1$s"><img src="%1$s" class="reddit-image"/></a><p class="caption"><a href="%2$s">Comments</a></p></div>';
-    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="none" %4$s class="reddit-image"><source src="%1$s" type="video/webm"><source src="%2$s" type="video/mp4"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
+    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="metadata" %4$s class="reddit-image"><source src="%1$s" type="video/webm"><source src="%2$s" type="video/mp4"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
     const LINK_CONTENT = '%1$s<p><a href="%2$s">%2$s</a></p>';
     const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
     const MATCH_REDDIT = 'reddit.com';
@@ -96,7 +96,7 @@ class RedditImageExtension extends Minz_Extension {
 
         $this->getConfiguration();
 
-        if (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/.]*)$#', $href, $matches)) {
+        if (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', $href, $matches)) {
             try {
                 $jsonResponse = file_get_contents(sprintf(static::GFYCAT_API, $matches['token']));
                 $arrayResponse = json_decode($jsonResponse, true);
