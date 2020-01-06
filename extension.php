@@ -148,10 +148,6 @@ class RedditImageExtension extends Minz_Extension {
     }
 
     private function getConfiguration() {
-        if ($this->hasConfiguration()) {
-            return;
-        }
-
         $current_user = Minz_Session::param('currentUser');
         $filename = 'configuration.' . $current_user . '.json';
         $filepath = join_path($this->getPath(), 'static', $filename);
@@ -175,14 +171,5 @@ class RedditImageExtension extends Minz_Extension {
                 $this->display_video = $configuration['displayVideo'];
             }
         }
-    }
-
-    private function hasConfiguration() {
-        return (
-            isset($this->image_height) && null !== $this->image_height &&
-            isset($this->muted_video) && null !== $this->muted_video &&
-            isset($this->display_image) && null !== $this->display_image &&
-            isset($this->display_video) && null !== $this->display_video
-        );
     }
 }
