@@ -5,6 +5,7 @@ class RedditImageExtension extends Minz_Extension {
     const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="metadata" %4$s class="reddit-image"><source src="%1$s" type="video/webm"><source src="%2$s" type="video/mp4"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
     const LINK_CONTENT = '%1$s<p><a href="%2$s">%2$s</a></p>';
     const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
+    const REDGIFS_API = 'https://api.redgifs.com/v1/gfycats/%s';
     const MATCH_REDDIT = 'reddit.com';
 
     const DEFAULT_HEIGHT = 70;
@@ -25,6 +26,7 @@ class RedditImageExtension extends Minz_Extension {
 
         $this->registerHook('entry_before_display', array($this, 'transformEntry'));
         $this->registerHook('entry_before_insert', array($this, 'updateGfycatLink'));
+        $this->registerHook('entry_before_insert', array($this, 'updateRedgifsLink'));
     }
 
     public function handleConfigureAction() {
@@ -85,7 +87,7 @@ class RedditImageExtension extends Minz_Extension {
         return $entry;
     }
 
-    public function updateGfycatLink($entry) {
+    public function updateLink($entry, $pattern, $apiUrl) {
         if (false === $this->isRedditLink($entry)) {
             return $entry;
         }
@@ -96,19 +98,27 @@ class RedditImageExtension extends Minz_Extension {
 
         $this->getConfiguration();
 
-        if (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', $href, $matches)) {
+        if (preg_match($pattern, $href, $matches)) {
             try {
-                $jsonResponse = file_get_contents(sprintf(static::GFYCAT_API, $matches['token']));
+                $jsonResponse = file_get_contents(sprintf($apiUrl, $matches['token']));
                 $arrayResponse = json_decode($jsonResponse, true);
                 $videoUrl = $arrayResponse['gfyItem']['mp4Url'];
                 $newContent = preg_replace('#<a href="(?P<href>[^"]*)">\[link\]</a>#', "<a href=\"${videoUrl}\">[link]</a>", $entry->content());
             } catch (Exception $e) {
-                $newContent = sprintf('%s <p>GFYCAT ERROR</p>', $entry->content());
+                $newContent = sprintf('%s <p>API ERROR</p>', $entry->content());
             }
             $entry->_content($newContent);
         }
 
         return $entry;
+    }
+
+    public function updateGfycatLink($entry) {
+        return $this->updateLink($entry, '#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', static::GFYCAT_API);
+    }
+
+    public function updateRedgifsLink($entry) {
+        return $this->updateLink($entry, '#(?P<redgifs>redgifs.com/)(.*/)*(?P<token>[^/\-.]*)#', static::REDGIFS_API);
     }
 
     /**
