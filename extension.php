@@ -1,9 +1,9 @@
 <?php
 
 class RedditImageExtension extends Minz_Extension {
-    const IMAGE_CONTENT = '<div class="reddit-image figure"><a href="%1$s"><img src="%1$s" class="reddit-image"/></a><p class="caption"><a href="%2$s">Comments</a></p></div>';
-    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="metadata" %4$s class="reddit-image"><source src="%1$s" type="video/webm"><source src="%2$s" type="video/mp4"></video><p class="caption"><a href="%3$s">Comments</a></p></div>';
-    const LINK_CONTENT = '%1$s<p><a href="%2$s">%2$s</a></p>';
+    const IMAGE_CONTENT = '<div class="reddit-image figure"><img src="%s" class="reddit-image"/></div>';
+    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="metadata" %4$s class="reddit-image"><source src="%1$s" type="video/webm"><source src="%2$s" type="video/mp4"></video></div>';
+    const LINK_CONTENT = '<p><a href="%1$s">%1$s</a></p>';
     const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
     const REDGIFS_API = 'https://api.redgifs.com/v1/gfycats/%s';
     const MATCH_REDDIT = 'reddit.com';
@@ -12,6 +12,7 @@ class RedditImageExtension extends Minz_Extension {
     const DEFAULT_MUTEDVIDEO = true;
     const DEFAULT_DISPLAYIMAGE = true;
     const DEFAULT_DISPLAYVIDEO = true;
+    const DEFAULT_DISPLAYORIGINAL = true;
 
     public function init() {
         $this->registerTranslates();
@@ -42,6 +43,7 @@ class RedditImageExtension extends Minz_Extension {
                 'mutedVideo' => (bool) Minz_Request::param('muted-video'),
                 'displayImage' => (bool) Minz_Request::param('display-image'),
                 'displayVideo' => (bool) Minz_Request::param('display-video'),
+                'displayOriginal' => (bool) Minz_Request::param('display-original'),
             );
             file_put_contents($filepath, json_encode($configuration));
             file_put_contents(join_path($this->getPath(), 'static', "style.{$current_user}.css"), sprintf(
@@ -58,30 +60,36 @@ class RedditImageExtension extends Minz_Extension {
             return $entry;
         }
 
-        if (null === $href = $this->getContentLink($entry)) {
+        if (null === $href = $this->extractOriginalContentLink($entry)) {
             return $entry;
         }
 
         $this->getConfiguration();
 
+        $content = '';
+
         // Add image tag in content when the href links to an image
         if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
-            $this->addImageContent($entry, $href);
+            $content = $this->getNewImageContent($href);
         // Add image tag in content when the href links to an imgur gifv
         } elseif (preg_match('#(?P<gifv>.*imgur.com/[^/]*).gifv$#', $href, $matches)) {
             $href = "${matches['gifv']}.gif";
-            $this->addImageContent($entry, $href);
+            $content = $this->getNewImageContent($href);
         // Add image tag in content when the href links to an imgur image
         } elseif (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
             $href = "${href}.png";
-            $this->addImageContent($entry, $href);
+            $content = $this->getNewImageContent($href);
         // Add video tag in content when the href links to a video
         } elseif (preg_match('#(?P<baseurl>.+)(webm|mp4)$#', $href, $matches)) {
-            $this->addVideoContent($entry, $matches['baseurl']);
+            $content = $this->getNewVideoContent($entry, $matches['baseurl']);
         } else {
-            $this->addLinkContent($entry, $href);
+            $content = $this->getNewLinkContent($href);
         }
 
+        if ($this->display_original) {
+            $content .= $entry->content();
+        }
+        $entry->_content($content);
         $entry->_link($href);
 
         return $entry;
@@ -92,7 +100,7 @@ class RedditImageExtension extends Minz_Extension {
             return $entry;
         }
 
-        if (null === $href = $this->getContentLink($entry)) {
+        if (null === $href = $this->extractOriginalContentLink($entry)) {
             return $entry;
         }
 
@@ -131,30 +139,30 @@ class RedditImageExtension extends Minz_Extension {
     /**
      * @return string|null
      */
-    private function getContentLink($entry) {
+    private function extractOriginalContentLink($entry) {
         if (preg_match('#<a href="(?P<href>[^"]*)">\[link\]</a>#', $entry->content(), $matches)) {
             return $matches['href'];
         }
     }
 
-    private function addImageContent($entry, $href) {
+    private function getNewImageContent($href) {
         if (!$this->display_image) {
             return;
         }
-        $entry->_content(sprintf(static::IMAGE_CONTENT,$href, $entry->link()));
+        return sprintf(static::IMAGE_CONTENT,$href);
     }
 
-    private function addVideoContent($entry, $baseUrl) {
+    private function getNewVideoContent($entry, $baseUrl) {
         if (!$this->display_video) {
             return;
         }
         $hrefMp4 = $baseUrl . 'mp4';
         $hrefWebm = $baseUrl . 'webm';
-        $entry->_content(sprintf(static::VIDEO_CONTENT, $hrefWebm, $hrefMp4, $entry->link(), $this->muted_video ? 'muted': ''));
+        return sprintf(static::VIDEO_CONTENT, $hrefWebm, $hrefMp4, $entry->link(), $this->muted_video ? 'muted': '');
     }
 
-    private function addLinkContent($entry, $href) {
-        $entry->_content(sprintf(static::LINK_CONTENT, $entry->content(), $href));
+    private function getNewLinkContent($href) {
+        return sprintf(static::LINK_CONTENT, $href);
     }
 
     private function getConfiguration() {
@@ -166,6 +174,7 @@ class RedditImageExtension extends Minz_Extension {
         $this->muted_video = static::DEFAULT_MUTEDVIDEO;
         $this->display_image = static::DEFAULT_DISPLAYIMAGE;
         $this->display_video = static::DEFAULT_DISPLAYVIDEO;
+        $this->display_original = static::DEFAULT_DISPLAYORIGINAL;
         if (file_exists($filepath)) {
             $configuration = json_decode(file_get_contents($filepath), true);
             if (array_key_exists('imageHeight', $configuration)) {
@@ -179,6 +188,9 @@ class RedditImageExtension extends Minz_Extension {
             }
             if (array_key_exists('displayVideo', $configuration)) {
                 $this->display_video = $configuration['displayVideo'];
+            }
+            if (array_key_exists('displayOriginal', $configuration)) {
+                $this->display_original = $configuration['displayOriginal'];
             }
         }
     }

@@ -35,6 +35,15 @@
 		</div>
 	</div>
 
+	<div class="form-group">
+		<div class="group-controls">
+			<label class="checkbox" for="display-original">
+				<input type="checkbox" name="display-original" id="display-original" value="1" <?= $this->display_original ? 'checked=true' : '' ?>/>
+				<?= _t('ext.reddit_image.display_original'); ?>
+			</label>
+		</div>
+	</div>
+
 	<div class="form-group form-actions">
 		<?php if (isset($this->permission_problem)) { ?>
 			<p class="alert alert-error"><?php echo _t('ext.reddit_image.permission_problem', $this->permission_problem); ?></p>
