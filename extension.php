@@ -111,6 +111,9 @@ class RedditImageExtension extends Minz_Extension {
                 $jsonResponse = file_get_contents(sprintf($apiUrl, $matches['token']));
                 $arrayResponse = json_decode($jsonResponse, true);
                 $videoUrl = $arrayResponse['gfyItem']['mp4Url'];
+                if (empty($videoUrl)) {
+                    return $entry;
+                }
                 $newContent = preg_replace('#<a href="(?P<href>[^"]*)">\[link\]</a>#', "<a href=\"${videoUrl}\">[link]</a>", $entry->content());
             } catch (Exception $e) {
                 $newContent = sprintf('%s <p>API ERROR</p>', $entry->content());
