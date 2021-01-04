@@ -27,10 +27,9 @@ class ContentTransformer {
         // Add image tag in content when the href links to an image
         if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
             $content = $this->getNewImageContent($href);
-        // Add image tag in content when the href links to an imgur gifv
-        } elseif (preg_match('#(?P<gifv>.*imgur.com/[^/]*).gifv$#', $href, $matches)) {
-            $href = "${matches['gifv']}.gif";
-            $content = $this->getNewImageContent($href);
+        // Add video tag in content when the href links to an imgur gifv
+        } elseif (preg_match('#(?P<gifv>.*imgur.com/[^/]*.)gifv$#', $href, $matches)) {
+            $content = $this->getNewVideoContent($matches['gifv']);
         // Add image tag in content when the href links to an imgur image
         } elseif (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
             $href = "${href}.png";
