@@ -1,9 +1,8 @@
 <?php
 
+require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ContentTransformer.php';
+
 class RedditImageExtension extends Minz_Extension {
-    const IMAGE_CONTENT = '<div class="reddit-image figure"><img src="%s" class="reddit-image"/></div>';
-    const VIDEO_CONTENT = '<div class="reddit-image figure"><video controls preload="metadata" %3$s class="reddit-image"><source src="%1$s" type="video/webm"><source src="%2$s" type="video/mp4"></video></div>';
-    const LINK_CONTENT = '<p><a href="%1$s">%1$s</a></p>';
     const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
     const REDGIFS_API = 'https://api.redgifs.com/v1/gfycats/%s';
     const MATCH_REDDIT = 'reddit.com';
@@ -13,6 +12,8 @@ class RedditImageExtension extends Minz_Extension {
     const DEFAULT_DISPLAYIMAGE = true;
     const DEFAULT_DISPLAYVIDEO = true;
     const DEFAULT_DISPLAYORIGINAL = true;
+
+    private $contentTransformer;
 
     public function init() {
         $this->registerTranslates();
@@ -27,9 +28,11 @@ class RedditImageExtension extends Minz_Extension {
 
         $this->getConfiguration();
 
-        $this->registerHook('entry_before_display', array($this, 'transformEntry'));
+        $this->contentTransformer = new ContentTransformer($this->display_image, $this->display_video, $this->muted_video, $this->display_original);
+
         $this->registerHook('entry_before_insert', array($this, 'updateGfycatLink'));
         $this->registerHook('entry_before_insert', array($this, 'updateRedgifsLink'));
+        $this->registerHook('entry_before_display', array($this->contentTransformer, 'transform'));
     }
 
     public function handleConfigureAction() {
@@ -55,44 +58,6 @@ class RedditImageExtension extends Minz_Extension {
         }
 
         $this->getConfiguration();
-    }
-
-    public function transformEntry($entry) {
-        if (false === $this->isRedditLink($entry)) {
-            return $entry;
-        }
-
-        if (null === $href = $this->extractOriginalContentLink($entry)) {
-            return $entry;
-        }
-
-        $content = '';
-
-        // Add image tag in content when the href links to an image
-        if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
-            $content = $this->getNewImageContent($href);
-        // Add image tag in content when the href links to an imgur gifv
-        } elseif (preg_match('#(?P<gifv>.*imgur.com/[^/]*).gifv$#', $href, $matches)) {
-            $href = "${matches['gifv']}.gif";
-            $content = $this->getNewImageContent($href);
-        // Add image tag in content when the href links to an imgur image
-        } elseif (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
-            $href = "${href}.png";
-            $content = $this->getNewImageContent($href);
-        // Add video tag in content when the href links to a video
-        } elseif (preg_match('#(?P<baseurl>.+)(webm|mp4)$#', $href, $matches)) {
-            $content = $this->getNewVideoContent($matches['baseurl']);
-        } else {
-            $content = $this->getNewLinkContent($href);
-        }
-
-        if ($this->display_original) {
-            $content .= $entry->content();
-        }
-        $entry->_content($content);
-        $entry->_link($href);
-
-        return $entry;
     }
 
     public function updateLink($entry, $pattern, $apiUrl) {
@@ -146,26 +111,6 @@ class RedditImageExtension extends Minz_Extension {
         if (preg_match('#<a href="(?P<href>[^"]*)">\[link\]</a>#', $entry->content(), $matches)) {
             return $matches['href'];
         }
-    }
-
-    private function getNewImageContent($href) {
-        if (!$this->display_image) {
-            return;
-        }
-        return sprintf(static::IMAGE_CONTENT,$href);
-    }
-
-    private function getNewVideoContent($baseUrl) {
-        if (!$this->display_video) {
-            return;
-        }
-        $hrefMp4 = $baseUrl . 'mp4';
-        $hrefWebm = $baseUrl . 'webm';
-        return sprintf(static::VIDEO_CONTENT, $hrefWebm, $hrefMp4, $this->muted_video ? 'muted': '');
-    }
-
-    private function getNewLinkContent($href) {
-        return sprintf(static::LINK_CONTENT, $href);
     }
 
     private function getConfiguration() {
