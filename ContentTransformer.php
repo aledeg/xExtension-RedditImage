@@ -1,8 +1,6 @@
 <?php
 
-class ContentTransformer {
-    const MATCH_REDDIT = 'reddit.com';
-
+class ContentTransformer extends AbstractTransformer {
     private $displayImage;
     private $displayVideo;
     private $mutedVideo;
@@ -49,22 +47,6 @@ class ContentTransformer {
         $entry->_link($href);
 
         return $entry;
-    }
-
-    /**
-     * @return bool
-     */
-    private function isRedditLink($entry) {
-        return (bool) strpos($entry->link(), static::MATCH_REDDIT);
-    }
-
-    /**
-     * @return string|null
-     */
-    private function extractOriginalContentLink($entry) {
-        if (preg_match('#<a href="(?P<href>[^"]*)">\[link\]</a>#', $entry->content(), $matches)) {
-            return $matches['href'];
-        }
     }
 
     /**

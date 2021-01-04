@@ -1,12 +1,10 @@
 <?php
 
+require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'AbstractTransformer.php';
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ContentTransformer.php';
+require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'LinkTransformer.php';
 
 class RedditImageExtension extends Minz_Extension {
-    const GFYCAT_API = 'https://api.gfycat.com/v1/gfycats/%s';
-    const REDGIFS_API = 'https://api.redgifs.com/v1/gfycats/%s';
-    const MATCH_REDDIT = 'reddit.com';
-
     const DEFAULT_HEIGHT = 70;
     const DEFAULT_MUTEDVIDEO = true;
     const DEFAULT_DISPLAYIMAGE = true;
@@ -14,6 +12,7 @@ class RedditImageExtension extends Minz_Extension {
     const DEFAULT_DISPLAYORIGINAL = true;
 
     private $contentTransformer;
+    private $linkTransformer;
 
     public function init() {
         $this->registerTranslates();
@@ -29,10 +28,10 @@ class RedditImageExtension extends Minz_Extension {
         $this->getConfiguration();
 
         $this->contentTransformer = new ContentTransformer($this->display_image, $this->display_video, $this->muted_video, $this->display_original);
+        $this->linkTransformer = new LinkTransformer();
 
-        $this->registerHook('entry_before_insert', array($this, 'updateGfycatLink'));
-        $this->registerHook('entry_before_insert', array($this, 'updateRedgifsLink'));
         $this->registerHook('entry_before_display', array($this->contentTransformer, 'transform'));
+        $this->registerHook('entry_before_insert', array($this->linkTransformer, 'transform'));
     }
 
     public function handleConfigureAction() {
@@ -58,59 +57,6 @@ class RedditImageExtension extends Minz_Extension {
         }
 
         $this->getConfiguration();
-    }
-
-    public function updateLink($entry, $pattern, $apiUrl) {
-        if (false === $this->isRedditLink($entry)) {
-            return $entry;
-        }
-
-        if (null === $href = $this->extractOriginalContentLink($entry)) {
-            return $entry;
-        }
-
-        $this->getConfiguration();
-
-        if (preg_match($pattern, $href, $matches)) {
-            try {
-                $jsonResponse = file_get_contents(sprintf($apiUrl, $matches['token']));
-                $arrayResponse = json_decode($jsonResponse, true);
-                $videoUrl = $arrayResponse['gfyItem']['mp4Url'];
-                if (empty($videoUrl)) {
-                    return $entry;
-                }
-                $newContent = preg_replace('#<a href="(?P<href>[^"]*)">\[link\]</a>#', "<a href=\"${videoUrl}\">[link]</a>", $entry->content());
-            } catch (Exception $e) {
-                $newContent = sprintf('%s <p>API ERROR</p>', $entry->content());
-            }
-            $entry->_content($newContent);
-        }
-
-        return $entry;
-    }
-
-    public function updateGfycatLink($entry) {
-        return $this->updateLink($entry, '#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', static::GFYCAT_API);
-    }
-
-    public function updateRedgifsLink($entry) {
-        return $this->updateLink($entry, '#(?P<redgifs>redgifs.com/)(.*/)*(?P<token>[^/\-.]*)#', static::REDGIFS_API);
-    }
-
-    /**
-     * @return bool
-     */
-    private function isRedditLink($entry) {
-        return (bool) strpos($entry->link(), static::MATCH_REDDIT);
-    }
-
-    /**
-     * @return string|null
-     */
-    private function extractOriginalContentLink($entry) {
-        if (preg_match('#<a href="(?P<href>[^"]*)">\[link\]</a>#', $entry->content(), $matches)) {
-            return $matches['href'];
-        }
     }
 
     private function getConfiguration() {
