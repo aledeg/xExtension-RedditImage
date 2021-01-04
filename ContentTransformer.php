@@ -56,11 +56,7 @@ class ContentTransformer extends AbstractTransformer {
         if (!$this->displayImage) {
             return;
         }
-        return <<<CONTENT
-            <div class="reddit-image figure">
-                <img src="{$href}" class="reddit-image"/>
-            </div>
-            CONTENT;
+        return '<div class="reddit-image figure"><img src="' . $href . '" class="reddit-image"/></div>';
     }
 
     /**
@@ -71,24 +67,13 @@ class ContentTransformer extends AbstractTransformer {
             return;
         }
         $muted = $this->mutedVideo ? 'muted' : '';
-        return <<<CONTENT
-            <div class="reddit-image figure">
-                <video controls preload="metadata" {$muted} class="reddit-image">
-                    <source src="${baseUrl}webm" type="video/webm">
-                    <source src="${baseUrl}mp4" type="video/mp4">
-                </video>
-            </div>
-            CONTENT;
+        return '<div class="reddit-image figure"><video controls preload="metadata" ' . $muted . ' class="reddit-image"><source src="' . $baseUrl . 'webm" type="video/webm"><source src="' . $baseUrl . 'mp4" type="video/mp4"></video></div>';
     }
 
     /**
      * @return string
      */
     private function getNewLinkContent($href) {
-        return <<<CONTENT
-            <p>
-                <a href="{$href}">{$href}</a>
-            </p>
-            CONTENT;
+        return '<p><a href="' . $href . '">' . $href . '</a></p>';
     }
 }
