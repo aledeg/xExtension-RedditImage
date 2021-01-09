@@ -1,6 +1,8 @@
 <?php
 
-class ContentTransformer extends AbstractTransformer {
+namespace RedditImage\Transformer;
+
+class DisplayTransformer extends AbstractTransformer {
     private $displayImage;
     private $displayVideo;
     private $mutedVideo;

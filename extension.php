@@ -1,8 +1,7 @@
 <?php
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'AbstractTransformer.php';
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ContentTransformer.php';
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'LinkTransformer.php';
+use RedditImage\Transformer\DisplayTransformer;
+use RedditImage\Transformer\InsertTransformer;
 
 class RedditImageExtension extends Minz_Extension {
     const DEFAULT_HEIGHT = 70;
@@ -11,10 +10,19 @@ class RedditImageExtension extends Minz_Extension {
     const DEFAULT_DISPLAYVIDEO = true;
     const DEFAULT_DISPLAYORIGINAL = true;
 
-    private $contentTransformer;
-    private $linkTransformer;
+    private $displayTransformer;
+    private $insertTransformer;
+
+    public function autoload($class_name) {
+        if (0 === strpos($class_name, 'RedditImage')) {
+            $class_name = substr($class_name, 12);
+            include $this->getPath() . DIRECTORY_SEPARATOR . str_replace('\\', '/', $class_name) . '.php';
+        }
+    }
 
     public function init() {
+        spl_autoload_register(array($this, 'autoload'));
+
         $this->registerTranslates();
 
         $current_user = Minz_Session::param('currentUser');
@@ -27,11 +35,11 @@ class RedditImageExtension extends Minz_Extension {
 
         $this->getConfiguration();
 
-        $this->contentTransformer = new ContentTransformer($this->display_image, $this->display_video, $this->muted_video, $this->display_original);
-        $this->linkTransformer = new LinkTransformer();
+        $this->displayTransformer = new DisplayTransformer($this->display_image, $this->display_video, $this->muted_video, $this->display_original);
+        $this->insertTransformer = new InsertTransformer();
 
-        $this->registerHook('entry_before_display', array($this->contentTransformer, 'transform'));
-        $this->registerHook('entry_before_insert', array($this->linkTransformer, 'transform'));
+        $this->registerHook('entry_before_display', array($this->displayTransformer, 'transform'));
+        $this->registerHook('entry_before_insert', array($this->insertTransformer, 'transform'));
     }
 
     public function handleConfigureAction() {

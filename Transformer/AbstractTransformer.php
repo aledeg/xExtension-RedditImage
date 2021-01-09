@@ -1,5 +1,7 @@
 <?php
 
+namespace RedditImage\Transformer;
+
 abstract class AbstractTransformer {
     const MATCH_REDDIT = 'reddit.com';
 

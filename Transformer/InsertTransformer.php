@@ -1,6 +1,8 @@
 <?php
 
-class LinkTransformer extends AbstractTransformer {
+namespace RedditImage\Transformer;
+
+class InsertTransformer extends AbstractTransformer {
     public function transform($entry) {
 
         if (false === $this->isRedditLink($entry)) {
