@@ -8,6 +8,5 @@ return array(
         'image_height' => 'Max. Höhe der Mediendatei',
         'image_height_unit' => '%% des Darstellungsbereichs (Viewport)',
         'muted_video' => 'Videos stummschalten',
-        'permission_problem' => 'Konnte die Konfigurationsdatei nicht überschreiben, bitte Dateiberechtigungen anpassen für %s',
     ),
 );
