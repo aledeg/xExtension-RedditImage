@@ -41,9 +41,7 @@ class DisplayTransformer extends AbstractTransformer {
             $content = $this->getNewLinkContent($href);
         }
 
-        if ($this->displayOriginal) {
-            $content .= $entry->content();
-        }
+        $content .= $this->getStrippedContent($entry->content());
 
         $entry->_content($content);
         $entry->_link($href);
@@ -77,5 +75,30 @@ class DisplayTransformer extends AbstractTransformer {
      */
     private function getNewLinkContent($href) {
         return '<p><a href="' . $href . '">' . $href . '</a></p>';
+    }
+
+    /**
+     * Get the stripped content of the entry.
+     *
+     * As the content might be modified upon insertion, it's mandatory to check the content
+     * for the original HTML table
+     *
+     * @return string
+     */
+    private function getStrippedContent($content) {
+        if ($this->displayOriginal) {
+            return $content;
+        }
+
+        $dom = new \DomDocument();
+        $dom->loadHTML($content);
+
+        if (null === $tableNode = $dom->getElementsByTagName('table')->item(0)) {
+            return $content;
+        }
+
+        $tableNode->parentNode->removeChild($tableNode);
+
+        return $dom->saveHTML();
     }
 }
