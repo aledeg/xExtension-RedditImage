@@ -24,29 +24,38 @@ class DisplayTransformer extends AbstractTransformer {
             return $entry;
         }
 
-        // Add image tag in content when the href links to an image
-        if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
-            $content = $this->getNewImageContent($href);
-        // Add video tag in content when the href links to an imgur gifv
-        } elseif (preg_match('#(?P<gifv>.*imgur.com/[^/]*.)gifv$#', $href, $matches)) {
-            $content = $this->getNewVideoContent($matches['gifv']);
-        // Add image tag in content when the href links to an imgur image
-        } elseif (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
-            $href = "${href}.png";
-            $content = $this->getNewImageContent($href);
-        // Add video tag in content when the href links to a video
-        } elseif (preg_match('#(?P<baseurl>.+)(webm|mp4)$#', $href, $matches)) {
-            $content = $this->getNewVideoContent($matches['baseurl']);
-        } else {
-            $content = $this->getNewLinkContent($href);
-        }
-
+        $content = $this->getImprovedContent($href);
         $content .= $this->getStrippedContent($entry->content());
 
         $entry->_content($content);
         $entry->_link($href);
 
         return $entry;
+    }
+
+    /**
+     * @param string $href
+     * @return string
+     */
+    private function getImprovedContent($href) {
+        // Add image tag in content when the href links to an image
+        if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
+            return $this->getNewImageContent($href);
+        }
+        // Add video tag in content when the href links to an imgur gifv
+        if (preg_match('#(?P<gifv>.*imgur.com/[^/]*.)gifv$#', $href, $matches)) {
+            return $this->getNewVideoContent($matches['gifv']);
+        }
+        // Add image tag in content when the href links to an imgur image
+        if (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
+            $href = "${href}.png";
+            return $this->getNewImageContent($href);
+        }
+        // Add video tag in content when the href links to a video
+        if (preg_match('#(?P<baseurl>.+)(webm|mp4)$#', $href, $matches)) {
+            return $this->getNewVideoContent($matches['baseurl']);
+        }
+        return $this->getNewLinkContent($href);
     }
 
     /**
