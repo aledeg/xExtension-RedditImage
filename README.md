@@ -28,3 +28,4 @@ Muted video | Choose if videos are muted or not | True
 Display images | Choose if images are displayed | True
 Display videos | Choose if videos are displayed | True
 Display original content | Choose if original contents are displayed | True
+Display metadata | Choose if original content metadata are displayed | False
