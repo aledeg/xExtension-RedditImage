@@ -7,12 +7,14 @@ class DisplayTransformer extends AbstractTransformer {
     private $displayVideo;
     private $mutedVideo;
     private $displayOriginal;
+    private $displayMetadata;
 
-    public function __construct(bool $displayImage, bool $displayVideo, bool $mutedVideo, bool $displayOriginal) {
+    public function __construct(bool $displayImage, bool $displayVideo, bool $mutedVideo, bool $displayOriginal, bool $displayMetadata) {
         $this->displayImage = $displayImage;
         $this->displayVideo = $displayVideo;
         $this->mutedVideo = $mutedVideo;
         $this->displayOriginal = $displayOriginal;
+        $this->displayMetadata = $displayMetadata;
     }
 
     public function transform($entry) {
@@ -26,6 +28,7 @@ class DisplayTransformer extends AbstractTransformer {
 
         $content = $this->getImprovedContent($href);
         $content .= $this->getStrippedContent($entry->content());
+        $content .= $this->extractMetadata($entry->content());
 
         $entry->_content($content);
         $entry->_link($href);
@@ -124,6 +127,28 @@ CONTENT;
         }
 
         $tableNode->parentNode->removeChild($tableNode);
+
+        return $dom->saveHTML();
+    }
+
+    /**
+     * Extract metadata from original article
+     *
+     * @param string $content
+     * @return string
+     */
+    private function extractMetadata($content) {
+        if (!$this->displayMetadata) {
+            return '';
+        }
+
+        $dom = new \DOMDocument();
+        $dom->loadHTML($content);
+        if (null === $metadataNode = $dom->getElementsByTagName('td')->item(0)) {
+            return $content;
+        }
+
+        $metadataNode->parentNode->removeChild($metadataNode);
 
         return $dom->saveHTML();
     }

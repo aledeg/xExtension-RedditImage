@@ -44,6 +44,15 @@
 		</div>
 	</div>
 
+	<div class="form-group">
+		<div class="group-controls">
+			<label class="checkbox" for="display-metadata">
+				<input type="checkbox" name="display-metadata" id="display-metadata" value="1" <?= $this->getDisplayMetadata() ? 'checked=true' : '' ?>/>
+				<?= _t('ext.reddit_image.display_metadata'); ?>
+			</label>
+		</div>
+	</div>
+
 	<div class="form-group form-actions">
 		<div class="group-controls">
 			<button type="submit" class="btn btn-important"><?php echo _t('gen.action.submit'); ?></button>

@@ -3,6 +3,7 @@
 return array(
     'reddit_image' => array(
         'display_image' => 'Display images',
+        'display_metadata' => 'Display metadata',
         'display_original' => 'Display original content',
         'display_video' => 'Display videos',
         'image_height' => 'Media height',

@@ -9,6 +9,7 @@ class RedditImageExtension extends Minz_Extension {
     const DEFAULT_DISPLAYIMAGE = true;
     const DEFAULT_DISPLAYVIDEO = true;
     const DEFAULT_DISPLAYORIGINAL = true;
+    const DEFAULT_DISPLAYMETADATA = false;
 
     private $displayTransformer;
     private $insertTransformer;
@@ -33,7 +34,7 @@ class RedditImageExtension extends Minz_Extension {
             Minz_View::appendStyle($this->getFileUrl($filename, 'css'));
         }
 
-        $this->displayTransformer = new DisplayTransformer($this->getDisplayImage(), $this->getDisplayVideo(), $this->getMutedVideo(), $this->getDisplayOriginal());
+        $this->displayTransformer = new DisplayTransformer($this->getDisplayImage(), $this->getDisplayVideo(), $this->getMutedVideo(), $this->getDisplayOriginal(), $this->getDisplayMetadata());
         $this->insertTransformer = new InsertTransformer();
 
         $this->registerHook('entry_before_display', array($this->displayTransformer, 'transform'));
@@ -52,6 +53,7 @@ class RedditImageExtension extends Minz_Extension {
                 'displayImage' => (bool) Minz_Request::param('display-image'),
                 'displayVideo' => (bool) Minz_Request::param('display-video'),
                 'displayOriginal' => (bool) Minz_Request::param('display-original'),
+                'displayMetadata' => (bool) Minz_Request::param('display-metadata'),
             ];
             $this->setUserConfiguration($configuration);
             file_put_contents(join_path($this->getPath(), 'static', "style.{$current_user}.css"), sprintf(
@@ -79,5 +81,9 @@ class RedditImageExtension extends Minz_Extension {
 
     public function getDisplayOriginal() {
         return $this->getUserConfigurationValue('displayOriginal', static::DEFAULT_DISPLAYORIGINAL);
+    }
+
+    public function getDisplayMetadata() {
+        return $this->getUserConfigurationValue('displayMetadata', static::DEFAULT_DISPLAYMETADATA);
     }
 }

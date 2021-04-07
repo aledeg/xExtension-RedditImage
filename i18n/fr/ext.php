@@ -3,6 +3,7 @@
 return array(
     'reddit_image' => array(
         'display_image' => 'Afficher les images',
+        'display_metadata' => 'Afficher les métadonnées',
         'display_original' => 'Afficher le contenu initial',
         'display_video' => 'Afficher les vidéos',
         'image_height' => 'Hauteur des médias',
