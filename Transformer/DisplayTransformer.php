@@ -2,6 +2,8 @@
 
 namespace RedditImage\Transformer;
 
+use RedditImage\Content;
+
 class DisplayTransformer extends AbstractTransformer {
     private $displayImage;
     private $displayVideo;
@@ -22,25 +24,29 @@ class DisplayTransformer extends AbstractTransformer {
             return $entry;
         }
 
-        if (null === $href = $this->extractOriginalContentLink($entry)) {
+        $content = new Content($entry->content());
+
+        if (null === $content->getContentLink()) {
             return $entry;
         }
 
-        $content = $this->getImprovedContent($href);
-        $content .= $this->getStrippedContent($entry->content());
-        $content .= $this->extractMetadata($entry->content());
+        $improved = $content->hasBeenPreprocessed() ? '' : $this->getImprovedContent($content);
+        $original = $this->displayOriginal ? $content->getRaw() : '';
+        $metadata = $this->displayMetadata ? "<div>{$content->getMetadata()}</div>" : '';
 
-        $entry->_content($content);
-        $entry->_link($href);
+        $entry->_content("{$content->getPreprocessed()}{$improved}{$content->getReal()}{$original}{$metadata}");
+        $entry->_link($content->getContentLink());
 
         return $entry;
     }
 
     /**
-     * @param string $href
+     * @param Content $href
      * @return string
      */
-    private function getImprovedContent($href) {
+    private function getImprovedContent($content) {
+        $href = $content->getContentLink();
+
         // Add image tag in content when the href links to an image
         if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
             return $this->getNewImageContent($href);
@@ -58,7 +64,10 @@ class DisplayTransformer extends AbstractTransformer {
         if (preg_match('#(?P<baseurl>.+)(webm|mp4)$#', $href, $matches)) {
             return $this->getNewVideoContent($matches['baseurl']);
         }
-        return $this->getNewLinkContent($href);
+        if (!$content->hasReal()) {
+            return $this->getNewLinkContent($href);
+        }
+        return '';
     }
 
     /**
@@ -104,52 +113,5 @@ CONTENT;
     <a href="{$href}">{$href}</a>
 </p>
 CONTENT;
-    }
-
-    /**
-     * Get the stripped content of the entry.
-     *
-     * As the content might be modified upon insertion, it's mandatory to check the content
-     * for the original HTML table
-     *
-     * @return string
-     */
-    private function getStrippedContent($content) {
-        if ($this->displayOriginal) {
-            return $content;
-        }
-
-        $dom = new \DomDocument();
-        $dom->loadHTML($content);
-
-        if (null === $tableNode = $dom->getElementsByTagName('table')->item(0)) {
-            return $content;
-        }
-
-        $tableNode->parentNode->removeChild($tableNode);
-
-        return $dom->saveHTML();
-    }
-
-    /**
-     * Extract metadata from original article
-     *
-     * @param string $content
-     * @return string
-     */
-    private function extractMetadata($content) {
-        if (!$this->displayMetadata) {
-            return '';
-        }
-
-        $dom = new \DOMDocument();
-        $dom->loadHTML($content);
-        if (null === $metadataNode = $dom->getElementsByTagName('td')->item(0)) {
-            return $content;
-        }
-
-        $metadataNode->parentNode->removeChild($metadataNode);
-
-        return $dom->saveHTML();
     }
 }
