@@ -61,7 +61,6 @@ class InsertTransformer extends AbstractTransformer {
                     $content .= '</div>';
                     $entry->_content($content . $entry->content());
                 }
-                // $entry->_content('gallery');
             } catch (Exception $e) {
                 Minz_Log::error("REDDIT API ERROR - {$href}");
             }
