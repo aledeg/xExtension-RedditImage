@@ -29,3 +29,6 @@ Display images | Choose if images are displayed | True
 Display videos | Choose if videos are displayed | True
 Display original content | Choose if original contents are displayed | True
 Display metadata | Choose if original content metadata are displayed | False
+
+**Note:**
+When the *display original content* option is set to *true*, text content will be displayed twice. Once from the extracted content and once from the original content. To have a nicer interface, it is recommended to set that option to *false*.
