@@ -30,11 +30,13 @@ class DisplayTransformer extends AbstractTransformer {
             return $entry;
         }
 
+        // Currently, only images are added during preprocessing.
+        $preprocessed = $this->displayImage ? $content->getPreprocessed() : '';
         $improved = $content->hasBeenPreprocessed() ? '' : $this->getImprovedContent($content);
         $original = $this->displayOriginal ? $content->getRaw() : '';
         $metadata = $this->displayMetadata ? "<div>{$content->getMetadata()}</div>" : '';
 
-        $entry->_content("{$content->getPreprocessed()}{$improved}{$content->getReal()}{$original}{$metadata}");
+        $entry->_content("{$preprocessed}{$improved}{$content->getReal()}{$original}{$metadata}");
         $entry->_link($content->getContentLink());
 
         return $entry;
