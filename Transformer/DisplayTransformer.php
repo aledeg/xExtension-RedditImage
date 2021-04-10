@@ -111,15 +111,36 @@ class DisplayTransformer extends AbstractTransformer {
         $video->setAttribute('class', 'reddit-image');
         $video->setAttribute('muted', $this->mutedVideo);
 
-        $webm = $video->appendChild($dom->createElement('source'));
-        $webm->setAttribute('src', "{$baseUrl}webm");
-        $webm->setAttribute('type', 'video/webm');
+        $mp4Url = "{$baseUrl}mp4";
+        if ($this->isAccessible($mp4Url)) {
+            $mp4 = $video->appendChild($dom->createElement('source'));
+            $mp4->setAttribute('src', $mp4Url);
+            $mp4->setAttribute('type', 'video/mp4');
+            return $dom->saveHTML();
+        }
 
-        $mp4 = $video->appendChild($dom->createElement('source'));
-        $mp4->setAttribute('src', "{$baseUrl}mp4");
-        $mp4->setAttribute('type', 'video/mp4');
+        $webmUrl = "{$baseUrl}webm";
+        if ($this->isAccessible($webmUrl)) {
+            $webm = $video->appendChild($dom->createElement('source'));
+            $webm->setAttribute('src', $webmUrl);
+            $webm->setAttribute('type', 'video/webm');
+            return $dom->saveHTML();
+        }
 
-        return $dom->saveHTML();
+        return;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isAccessible($href) {
+        $channel = curl_init($href);
+        curl_setopt($channel, CURLOPT_NOBODY, true);
+        curl_exec($channel);
+        $httpCode = curl_getinfo($channel, CURLINFO_HTTP_CODE);
+        curl_close($channel);
+
+        return 200 === $httpCode;
     }
 
     /**
