@@ -80,11 +80,16 @@ class DisplayTransformer extends AbstractTransformer {
             return;
         }
 
-        return <<<CONTENT
-<div class="reddit-image figure">
-    <img src="{$href}" class="reddit-image"/>
-</div>
-CONTENT;
+        $dom = new \DomDocument();
+
+        $div = $dom->appendChild($dom->createElement('div'));
+        $div->setAttribute('class', 'reddit-image figure');
+
+        $img = $div->appendChild($dom->createElement('img'));
+        $img->setAttribute('src', $href);
+        $img->setAttribute('class', 'reddit-image');
+
+        return $dom->saveHTML();
     }
 
     /**
@@ -94,26 +99,40 @@ CONTENT;
         if (!$this->displayVideo) {
             return;
         }
-        $muted = $this->mutedVideo ? 'muted' : '';
 
-        return <<<CONTENT
-<div class="reddit-image figure">
-    <video controls preload="metadata" {$muted} class="reddit-image">
-        <source src="{$baseUrl}webm" type="video/webm">
-        <source src="{$baseUrl}mp4" type="video/mp4">
-    </video>
-</div>
-CONTENT;
+        $dom = new \DomDocument();
+
+        $div = $dom->appendChild($dom->createElement('div'));
+        $div->setAttribute('class', 'reddit-image figure');
+
+        $video = $div->appendChild($dom->createElement('video'));
+        $video->setAttribute('controls', true);
+        $video->setAttribute('preload', 'metadata');
+        $video->setAttribute('class', 'reddit-image');
+        $video->setAttribute('muted', $this->mutedVideo);
+
+        $webm = $video->appendChild($dom->createElement('source'));
+        $webm->setAttribute('src', "{$baseUrl}webm");
+        $webm->setAttribute('type', 'video/webm');
+
+        $mp4 = $video->appendChild($dom->createElement('source'));
+        $mp4->setAttribute('src', "{$baseUrl}mp4");
+        $mp4->setAttribute('type', 'video/mp4');
+
+        return $dom->saveHTML();
     }
 
     /**
      * @return string
      */
     private function getNewLinkContent($href) {
-        return <<<CONTENT
-<p>
-    <a href="{$href}">{$href}</a>
-</p>
-CONTENT;
+        $dom = new \DomDocument();
+
+        $p = $dom->appendChild($dom->createElement('p'));
+        $a = $p->appendChild($dom->createElement('a'));
+        $a->setAttribute('href', $href);
+        $a->textContent = $href;
+
+        return $dom->saveHTML();
     }
 }
