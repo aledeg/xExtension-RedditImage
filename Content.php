@@ -29,6 +29,10 @@ class Content {
         return $this->contentLink;
     }
 
+    public function getCommentsLink() {
+        return $this->commentsLink;
+    }
+
     public function getPreprocessed() {
         return $this->preprocessed;
     }

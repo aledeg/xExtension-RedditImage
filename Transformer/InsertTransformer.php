@@ -2,6 +2,8 @@
 
 namespace RedditImage\Transformer;
 
+use RedditImage\Content;
+
 class InsertTransformer extends AbstractTransformer {
     public function transform($entry) {
 
@@ -9,7 +11,8 @@ class InsertTransformer extends AbstractTransformer {
             return $entry;
         }
 
-        if (null === $href = $this->extractOriginalContentLink($entry)) {
+        $content = new Content($entry->content());
+        if (null === $href = $content->getContentLink()) {
             return $entry;
         }
 
@@ -37,7 +40,7 @@ class InsertTransformer extends AbstractTransformer {
             }
         } elseif (preg_match('#v.redd.it#', $href)) {
             try {
-                $jsonResponse = file_get_contents("{$this->extractOriginalCommentsLink($entry)}.json");
+                $jsonResponse = file_get_contents("{$content->getCommentsLink()}.json");
                 $arrayResponse = json_decode($jsonResponse, true);
                 $videoUrl = $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url'];
                 if (!empty($videoUrl)) {
@@ -49,7 +52,7 @@ class InsertTransformer extends AbstractTransformer {
             }
         } elseif (preg_match('#reddit.com/gallery#', $href)) {
             try {
-                $jsonResponse = file_get_contents("{$this->extractOriginalCommentsLink($entry)}.json");
+                $jsonResponse = file_get_contents("{$content->getCommentsLink()}.json");
                 $arrayResponse = json_decode($jsonResponse, true);
                 $pictures = $arrayResponse[0]['data']['children'][0]['data']['media_metadata'];
                 if (!empty($pictures)) {
