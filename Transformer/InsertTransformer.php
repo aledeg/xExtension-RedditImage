@@ -56,13 +56,17 @@ class InsertTransformer extends AbstractTransformer {
                 $arrayResponse = json_decode($jsonResponse, true);
                 $pictures = $arrayResponse[0]['data']['children'][0]['data']['media_metadata'];
                 if (!empty($pictures)) {
-                    $content = '<div class="reddit-image figure">';
+                    $dom = new \DomDocument();
+
+                    $div = $dom->appendChild($dom->createElement('div'));
+                    $div->setAttribute('class', 'reddit-image figure');
                     foreach ($pictures as $id => $metadata) {
                         list(,$extension) = explode('/', $metadata['m']);
-                        $content .= "<img src=\"https://i.redd.it/{$id}.{$extension}\" class=\"reddit-image\"/>";
+                        $img = $div->appendChild($dom->createElement('img'));
+                        $img->setAttribute('src', "https://i.redd.it/{$id}.{$extension}");
+                        $img->setAttribute('class', 'reddit-image');
                     }
-                    $content .= '</div>';
-                    $entry->_content($content . $entry->content());
+                    $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 }
             } catch (Exception $e) {
                 Minz_Log::error("REDDIT API ERROR - {$href}");
