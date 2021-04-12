@@ -60,6 +60,9 @@ class InsertTransformer extends AbstractTransformer {
 
                     $div = $dom->appendChild($dom->createElement('div'));
                     $div->setAttribute('class', 'reddit-image figure');
+
+                    $div->appendChild($dom->createComment('xExtension-RedditImage | InsertTransformer | Reddit gallery'));
+
                     foreach ($pictures as $id => $metadata) {
                         list(,$extension) = explode('/', $metadata['m']);
                         $img = $div->appendChild($dom->createElement('img'));

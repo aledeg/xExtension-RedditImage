@@ -51,20 +51,20 @@ class DisplayTransformer extends AbstractTransformer {
 
         // Add image tag in content when the href links to an image
         if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
-            return $this->getNewImageContent($href);
+            return $this->getNewImageContent($href, 'Image link');
         }
         // Add video tag in content when the href links to an imgur gifv
         if (preg_match('#(?P<gifv>.*imgur.com/[^/]*.)gifv$#', $href, $matches)) {
-            return $this->getNewVideoContent($matches['gifv']);
+            return $this->getNewVideoContent($matches['gifv'], 'Imgur gifv');
         }
         // Add image tag in content when the href links to an imgur image
         if (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
             $href = "${href}.png";
-            return $this->getNewImageContent($href);
+            return $this->getNewImageContent($href, 'Imgur token');
         }
         // Add video tag in content when the href links to a video
         if (preg_match('#(?P<baseurl>.+)(webm|mp4)$#', $href, $matches)) {
-            return $this->getNewVideoContent($matches['baseurl']);
+            return $this->getNewVideoContent($matches['baseurl'], 'Video link');
         }
         if (!$content->hasReal()) {
             return $this->getNewLinkContent($href);
@@ -75,7 +75,7 @@ class DisplayTransformer extends AbstractTransformer {
     /**
      * @return string|null
      */
-    private function getNewImageContent($href) {
+    private function getNewImageContent($href, $origin) {
         if (!$this->displayImage) {
             return;
         }
@@ -84,6 +84,8 @@ class DisplayTransformer extends AbstractTransformer {
 
         $div = $dom->appendChild($dom->createElement('div'));
         $div->setAttribute('class', 'reddit-image figure');
+
+        $div->appendChild($dom->createComment("xExtension-RedditImage | DisplayTransformer | $origin"));
 
         $img = $div->appendChild($dom->createElement('img'));
         $img->setAttribute('src', $href);
@@ -95,7 +97,7 @@ class DisplayTransformer extends AbstractTransformer {
     /**
      * @return string|null
      */
-    private function getNewVideoContent($baseUrl) {
+    private function getNewVideoContent($baseUrl, $origin) {
         if (!$this->displayVideo) {
             return;
         }
@@ -104,6 +106,8 @@ class DisplayTransformer extends AbstractTransformer {
 
         $div = $dom->appendChild($dom->createElement('div'));
         $div->setAttribute('class', 'reddit-image figure');
+
+        $div->appendChild($dom->createComment("xExtension-RedditImage | DisplayTransformer | $origin"));
 
         $video = $div->appendChild($dom->createElement('video'));
         $video->setAttribute('controls', true);
