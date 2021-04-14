@@ -4,7 +4,7 @@ use RedditImage\Transformer\DisplayTransformer;
 use RedditImage\Transformer\InsertTransformer;
 
 class RedditImageExtension extends Minz_Extension {
-    const DEFAULT_HEIGHT = 70;
+    const DEFAULT_IMAGEHEIGHT = 70;
     const DEFAULT_MUTEDVIDEO = true;
     const DEFAULT_DISPLAYIMAGE = true;
     const DEFAULT_DISPLAYVIDEO = true;
@@ -48,7 +48,7 @@ class RedditImageExtension extends Minz_Extension {
 
         if (Minz_Request::isPost()) {
             $configuration = [
-                'imageHeight' => (int) Minz_Request::param('image-height', static::DEFAULT_HEIGHT),
+                'imageHeight' => (int) Minz_Request::param('image-height', static::DEFAULT_IMAGEHEIGHT),
                 'mutedVideo' => (bool) Minz_Request::param('muted-video'),
                 'displayImage' => (bool) Minz_Request::param('display-image'),
                 'displayVideo' => (bool) Minz_Request::param('display-video'),
@@ -64,7 +64,7 @@ class RedditImageExtension extends Minz_Extension {
     }
 
     public function getImageHeight() {
-        return $this->getUserConfigurationValue('imageHeight', static::DEFAULT_HEIGHT);
+        return $this->getUserConfigurationValue('imageHeight', static::DEFAULT_IMAGEHEIGHT);
     }
 
     public function getMutedVideo() {
