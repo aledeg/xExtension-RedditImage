@@ -80,17 +80,7 @@ class DisplayTransformer extends AbstractTransformer {
             return;
         }
 
-        $dom = new \DomDocument();
-
-        $div = $dom->appendChild($dom->createElement('div'));
-        $div->setAttribute('class', 'reddit-image figure');
-
-        $div->appendChild($dom->createComment("xExtension-RedditImage | DisplayTransformer | $origin"));
-
-        $img = $div->appendChild($dom->createElement('img'));
-        $img->setAttribute('src', $href);
-        $img->setAttribute('class', 'reddit-image');
-
+        $dom = $this->generateImageDom($origin, [$href]);
         return $dom->saveHTML();
     }
 

@@ -16,7 +16,10 @@ class InsertTransformer extends AbstractTransformer {
             return $entry;
         }
 
-        if (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', $href, $matches)) {
+        if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
+            $dom = $this->generateImageDom('Image link', [$href]);
+            $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
+        } elseif (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', $href, $matches)) {
             try {
                 $jsonResponse = file_get_contents("https://api.gfycat.com/v1/gfycats/{$matches['token']}");
                 $arrayResponse = json_decode($jsonResponse, true);
@@ -56,19 +59,12 @@ class InsertTransformer extends AbstractTransformer {
                 $arrayResponse = json_decode($jsonResponse, true);
                 $pictures = $arrayResponse[0]['data']['children'][0]['data']['media_metadata'];
                 if (!empty($pictures)) {
-                    $dom = new \DomDocument();
-
-                    $div = $dom->appendChild($dom->createElement('div'));
-                    $div->setAttribute('class', 'reddit-image figure');
-
-                    $div->appendChild($dom->createComment('xExtension-RedditImage | InsertTransformer | Reddit gallery'));
-
+                    $links = [];
                     foreach ($pictures as $id => $metadata) {
                         list(,$extension) = explode('/', $metadata['m']);
-                        $img = $div->appendChild($dom->createElement('img'));
-                        $img->setAttribute('src', "https://i.redd.it/{$id}.{$extension}");
-                        $img->setAttribute('class', 'reddit-image');
+                        $links[] = "https://i.redd.it/{$id}.{$extension}";
                     }
+                    $dom = $this->generateImageDom('Reddit gallery', $links);
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 }
             } catch (Exception $e) {
