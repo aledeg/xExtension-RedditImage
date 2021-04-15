@@ -1,5 +1,6 @@
 <form action="<?= _url('extension', 'configure', 'e', urlencode($this->getName())); ?>" method="post">
 	<input type="hidden" name="_csrf" value="<?= FreshRSS_Auth::csrfToken(); ?>" />
+	<legend><?= _t('ext.reddit_image.section.display_options') ?></legend>
 	<div class="form-group">
 		<label class="group-name" for="image-height"><?= _t('ext.reddit_image.image_height'); ?></label>
 		<div class="group-controls">
@@ -50,6 +51,21 @@
 				<input type="checkbox" name="display-metadata" id="display-metadata" value="1" <?= $this->getDisplayMetadata() ? 'checked=true' : '' ?>/>
 				<?= _t('ext.reddit_image.display_metadata'); ?>
 			</label>
+		</div>
+	</div>
+
+	<div class="form-group form-actions">
+		<div class="group-controls">
+			<button type="submit" class="btn btn-important"><?= _t('gen.action.submit'); ?></button>
+			<button type="reset" class="btn"><?= _t('gen.action.cancel'); ?></button>
+		</div>
+	</div>
+
+	<legend><?= _t('ext.reddit_image.section.authorizations') ?></legend>
+	<div class="form-group">
+		<label class="group-name" for="imgur-client-id"><?= _t('ext.reddit_image.imgur_client_id'); ?></label>
+		<div class="group-controls">
+			<input type="text" name="imgur-client-id" id="imgur-client-id" value="<?= $this->getImgurClientId() ?>"/>
 		</div>
 	</div>
 

@@ -35,7 +35,7 @@ class RedditImageExtension extends Minz_Extension {
         }
 
         $this->displayTransformer = new DisplayTransformer($this->getDisplayImage(), $this->getDisplayVideo(), $this->getMutedVideo(), $this->getDisplayOriginal(), $this->getDisplayMetadata());
-        $this->insertTransformer = new InsertTransformer();
+        $this->insertTransformer = new InsertTransformer($this->getImgurClientId());
 
         $this->registerHook('entry_before_display', array($this->displayTransformer, 'transform'));
         $this->registerHook('entry_before_insert', array($this->insertTransformer, 'transform'));
@@ -54,6 +54,7 @@ class RedditImageExtension extends Minz_Extension {
                 'displayVideo' => (bool) Minz_Request::param('display-video'),
                 'displayOriginal' => (bool) Minz_Request::param('display-original'),
                 'displayMetadata' => (bool) Minz_Request::param('display-metadata'),
+                'imgurClientId' => Minz_Request::param('imgur-client-id'),
             ];
             $this->setUserConfiguration($configuration);
             file_put_contents(join_path($this->getPath(), 'static', "style.{$current_user}.css"), sprintf(
@@ -85,5 +86,9 @@ class RedditImageExtension extends Minz_Extension {
 
     public function getDisplayMetadata() {
         return $this->getUserConfigurationValue('displayMetadata', static::DEFAULT_DISPLAYMETADATA);
+    }
+
+    public function getImgurClientId() {
+        return $this->getUserConfigurationValue('imgurClientId', '');
     }
 }

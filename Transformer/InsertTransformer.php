@@ -5,6 +5,12 @@ namespace RedditImage\Transformer;
 use RedditImage\Content;
 
 class InsertTransformer extends AbstractTransformer {
+    private $imgurClientId;
+
+    public function __construct(string $imgurClientId = null) {
+        $this->imgurClientId = $imgurClientId;
+    }
+
     public function transform($entry) {
 
         if (false === $this->isRedditLink($entry)) {
@@ -69,6 +75,46 @@ class InsertTransformer extends AbstractTransformer {
                 }
             } catch (Exception $e) {
                 Minz_Log::error("REDDIT API ERROR - {$href}");
+            }
+        } elseif (preg_match('#imgur.com/a/.?#', $href)) {
+            try {
+                if (0 < strlen($this->imgurClientId)) {
+                    $token = basename($href);
+                    $ch = curl_init(); 
+                    curl_setopt($ch, CURLOPT_URL, "https://api.imgur.com/3/album/$token/images");
+                    curl_setopt($ch, CURLOPT_HEADER, 0);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Client-ID {$this->imgurClientId}"]);
+                    curl_setopt($ch, CURLOPT_FAILONERROR, true);
+                    $jsonString = curl_exec($ch);
+                    if (curl_errno($ch)) {
+                        throw new Exception();
+                    }
+                    curl_close($ch);
+
+                    $links = [];
+                    $json = json_decode($jsonString, true);
+                    if (JSON_ERROR_NONE !== json_last_error()) {
+                        throw new Exception();
+                    }
+                    foreach ($json['data'] as $image) {
+                        $links[] = $image['link'];
+                    }
+                } else {
+                    $galleryDom = new \DomDocument();
+                    $galleryDom->loadHTML(file_get_contents($href), LIBXML_NOERROR);
+                    $galleryXpath = new \DomXpath($galleryDom);
+                    $images = $galleryXpath->query("//meta[@name='twitter:image']");
+                    foreach ($images as $image) {
+                        $links[] = $image->getAttribute('content');
+                    }
+                }
+
+                $dom = $this->generateImageDom('Imgur gallery', $links);
+                $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
+            } catch (Exception $e) {
+                Minz_Log::error("IMGUR GALLERY ERROR - {$href}");
             }
         }
 
