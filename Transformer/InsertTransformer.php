@@ -76,7 +76,7 @@ class InsertTransformer extends AbstractTransformer {
             } catch (Exception $e) {
                 Minz_Log::error("REDDIT API ERROR - {$href}");
             }
-        } elseif (preg_match('#imgur.com/a/.?#', $href)) {
+        } elseif (preg_match('#imgur.com/(a|gallery)/.?#', $href)) {
             try {
                 if (0 < strlen($this->imgurClientId)) {
                     $token = basename($href);
@@ -101,6 +101,8 @@ class InsertTransformer extends AbstractTransformer {
                     foreach ($json['data'] as $image) {
                         $links[] = $image['link'];
                     }
+                    $dom = $this->generateImageDom('Imgur gallery with API token', $links);
+                    $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 } else {
                     $galleryDom = new \DomDocument();
                     $galleryDom->loadHTML(file_get_contents($href), LIBXML_NOERROR);
@@ -109,10 +111,9 @@ class InsertTransformer extends AbstractTransformer {
                     foreach ($images as $image) {
                         $links[] = $image->getAttribute('content');
                     }
+                    $dom = $this->generateImageDom('Imgur gallery without API token', $links);
+                    $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 }
-
-                $dom = $this->generateImageDom('Imgur gallery', $links);
-                $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("IMGUR GALLERY ERROR - {$href}");
             }
