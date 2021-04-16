@@ -18,24 +18,58 @@ abstract class AbstractTransformer {
     abstract public function transform($entry);
 
     /**
+     * @return string
+     */
+    protected function getOriginComment($origin) {
+        $className = (new \ReflectionClass($this))->getShortName();
+
+        return "xExtension-RedditImage | $className | $origin";
+    }
+
+    /**
      * @param string $origin
      * @param array $links
      * @return \DomDocument
      */
     protected function generateImageDom($origin, $links = []) {
-        $className = (new \ReflectionClass($this))->getShortName();
-
         $dom = new \DomDocument();
 
         $div = $dom->appendChild($dom->createElement('div'));
         $div->setAttribute('class', 'reddit-image figure');
 
-        $div->appendChild($dom->createComment("xExtension-RedditImage | $className | $origin"));
+        $div->appendChild($dom->createComment($this->getOriginComment($origin)));
 
         foreach ($links as $link) {
             $img = $div->appendChild($dom->createElement('img'));
             $img->setAttribute('src', $link);
             $img->setAttribute('class', 'reddit-image');
+        }
+
+        return $dom;
+    }
+
+    /**
+     * @param string $origin
+     * @param array $details
+     * @return \DomDocument
+     */
+    protected function generateVideoDom($origin, $details = []) {
+        $dom = new \DomDocument();
+
+        $div = $dom->appendChild($dom->createElement('div'));
+        $div->setAttribute('class', 'reddit-image figure');
+
+        $div->appendChild($dom->createComment($this->getOriginComment($origin)));
+
+        $video = $div->appendChild($dom->createElement('video'));
+        $video->setAttribute('controls', true);
+        $video->setAttribute('preload', 'metadata');
+        $video->setAttribute('class', 'reddit-image');
+
+        foreach ($details as $detail) {
+            $source = $video->appendChild($dom->createElement('source'));
+            $source->setAttribute('src', $detail['link']);
+            $source->setAttribute('type', $detail['format']);
         }
 
         return $dom;

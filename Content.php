@@ -17,7 +17,7 @@ class Content {
         $this->raw = $content;
 
         $this->dom = new \DomDocument();
-        $this->dom->loadHTML($content);
+        $this->dom->loadHTML($content, LIBXML_NOERROR);
 
         $this->splitContent();
         $this->extractMetadata();
