@@ -42,7 +42,7 @@ class InsertTransformer extends AbstractTransformer {
                     [
                         'link' => $arrayResponse['gfyItem']['webmUrl'],
                         'format' => 'video/webm',
-                    ]
+                    ],
                 ];
                 $dom = $this->generateVideoDom('Gfycat with token', $videos);
                 $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
@@ -53,10 +53,19 @@ class InsertTransformer extends AbstractTransformer {
             try {
                 $jsonResponse = file_get_contents("https://api.redgifs.com/v1/gfycats/{$matches['token']}");
                 $arrayResponse = json_decode($jsonResponse, true);
-                $videoUrl = $arrayResponse['gfyItem']['mp4Url'];
-                if (!empty($videoUrl)) {
-                    $entry->_content($this->getModifiedContentLink($entry, $videoUrl));
+
+                if (JSON_ERROR_NONE !== json_last_error()) {
+                    throw new Exception();
                 }
+
+                $videos = [
+                    [
+                        'link' => $arrayResponse['gfyItem']['mp4Url'],
+                        'format' => 'video/mp4',
+                    ],
+                ];
+                $dom = $this->generateVideoDom('Redgifs with token', $videos);
+                $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("REDGIFS API ERROR - {$href}");
             }
