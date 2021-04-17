@@ -52,7 +52,22 @@ class DisplayTransformer extends AbstractTransformer {
         if (!$this->displayVideo && false !== strpos($preprocessed, 'video')) {
             return '';
         }
-        return $preprocessed;
+        if (false === strpos($preprocessed, 'video')) {
+            return $preprocessed;
+        }
+        if (!$this->mutedVideo) {
+            return $preprocessed;
+        }
+
+        $dom = new \DomDocument();
+        $dom->loadHTML($preprocessed, LIBXML_NOERROR);
+
+        $videos = $dom->getElementsByTagName('video');
+        foreach ($videos as $video) {
+            $video->setAttribute('muted', true);
+        }
+
+        return $dom->saveHTML();
     }
 
     /**
