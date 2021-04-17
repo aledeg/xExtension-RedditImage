@@ -30,20 +30,33 @@ class DisplayTransformer extends AbstractTransformer {
             return $entry;
         }
 
-        // Currently, only images are added during preprocessing.
-        $preprocessed = $this->displayImage ? $content->getPreprocessed() : '';
-        $improved = $content->hasBeenPreprocessed() ? '' : $this->getImprovedContent($content);
+        $improved = $content->hasBeenPreprocessed() ? $this->getPreprocessedContent($content) : $this->getImprovedContent($content);
         $original = $this->displayOriginal ? $content->getRaw() : '';
         $metadata = $this->displayMetadata ? "<div>{$content->getMetadata()}</div>" : '';
 
-        $entry->_content("{$preprocessed}{$improved}{$content->getReal()}{$original}{$metadata}");
+        $entry->_content("{$improved}{$content->getReal()}{$original}{$metadata}");
         $entry->_link($content->getContentLink());
 
         return $entry;
     }
 
     /**
-     * @param Content $href
+     * @param Content $content
+     * @return string
+     */
+    private function getPreprocessedContent($content) {
+        $preprocessed = $content->getPreprocessed();
+        if (!$this->displayImage && false !== strpos($preprocessed, 'img')) {
+            return '';
+        }
+        if (!$this->displayVideo && false !== strpos($preprocessed, 'video')) {
+            return '';
+        }
+        return $preprocessed;
+    }
+
+    /**
+     * @param Content $content
      * @return string
      */
     private function getImprovedContent($content) {
