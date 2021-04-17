@@ -82,11 +82,20 @@ class InsertTransformer extends AbstractTransformer {
             try {
                 $jsonResponse = file_get_contents("{$content->getCommentsLink()}.json");
                 $arrayResponse = json_decode($jsonResponse, true);
-                $videoUrl = $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url'];
-                if (!empty($videoUrl)) {
-                    $videoUrl = str_replace('?source=fallback', '', $videoUrl);
-                    $entry->_content($this->getModifiedContentLink($entry, $videoUrl));
+
+                if (JSON_ERROR_NONE !== json_last_error()) {
+                    throw new Exception();
                 }
+
+                $videoUrl = $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url'];
+                $videos = [
+                    [
+                        'link' => str_replace('?source=fallback', '', $videoUrl),
+                        'format' => 'video/mp4',
+                    ]
+                ];
+                $dom = $this->generateVideoDom('Reddit video', $videos);
+                $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("REDDIT API ERROR - {$href}");
             }
