@@ -2,6 +2,8 @@
 
 namespace RedditImage\Transformer;
 
+use RedditImage\Media\Image;
+
 abstract class AbstractTransformer {
     const MATCH_REDDIT = 'reddit.com';
 
@@ -28,10 +30,10 @@ abstract class AbstractTransformer {
 
     /**
      * @param string $origin
-     * @param array $links
+     * @param array $media
      * @return \DomDocument
      */
-    protected function generateImageDom($origin, $links = []) {
+    protected function generateImageDom($origin, $media = []) {
         $dom = new \DomDocument();
 
         $div = $dom->appendChild($dom->createElement('div'));
@@ -39,9 +41,12 @@ abstract class AbstractTransformer {
 
         $div->appendChild($dom->createComment($this->getOriginComment($origin)));
 
-        foreach ($links as $link) {
+        foreach ($media as $medium) {
+            if (!$medium instanceof Image) {
+                continue;
+            }
             $img = $div->appendChild($dom->createElement('img'));
-            $img->setAttribute('src', $link);
+            $img->setAttribute('src', $medium->getUrl());
             $img->setAttribute('class', 'reddit-image');
         }
 

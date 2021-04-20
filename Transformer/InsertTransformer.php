@@ -3,6 +3,7 @@
 namespace RedditImage\Transformer;
 
 use RedditImage\Content;
+use RedditImage\Media\Image;
 
 class InsertTransformer extends AbstractTransformer {
     private $imgurClientId;
@@ -23,7 +24,7 @@ class InsertTransformer extends AbstractTransformer {
         }
 
         if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
-            $dom = $this->generateImageDom('Image link', [$href]);
+            $dom = $this->generateImageDom('Image link', [new Image($href)]);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<gifv>.*imgur.com/[^/]*.)gifv$#', $href, $matches)) {
             $videos = [
@@ -35,7 +36,7 @@ class InsertTransformer extends AbstractTransformer {
             $dom = $this->generateVideoDom('Imgur gifv', $videos);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
-            $dom = $this->generateImageDom('Imgur image with URL token', ["$href.png"]);
+            $dom = $this->generateImageDom('Imgur image with URL token', [new Image("$href.png")]);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', $href, $matches)) {
             try {
@@ -108,12 +109,12 @@ class InsertTransformer extends AbstractTransformer {
                 $arrayResponse = json_decode($jsonResponse, true);
                 $pictures = $arrayResponse[0]['data']['children'][0]['data']['media_metadata'];
                 if (!empty($pictures)) {
-                    $links = [];
+                    $images = [];
                     foreach ($pictures as $id => $metadata) {
                         list(,$extension) = explode('/', $metadata['m']);
-                        $links[] = "https://i.redd.it/{$id}.{$extension}";
+                        $images[] = new Image("https://i.redd.it/{$id}.{$extension}");
                     }
-                    $dom = $this->generateImageDom('Reddit gallery', $links);
+                    $dom = $this->generateImageDom('Reddit gallery', $images);
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 }
             } catch (Exception $e) {
@@ -136,15 +137,15 @@ class InsertTransformer extends AbstractTransformer {
                     }
                     curl_close($ch);
 
-                    $links = [];
+                    $images = [];
                     $json = json_decode($jsonString, true);
                     if (JSON_ERROR_NONE !== json_last_error()) {
                         throw new Exception();
                     }
                     foreach ($json['data'] as $image) {
-                        $links[] = $image['link'];
+                        $images[] = new Image($image['link']);
                     }
-                    $dom = $this->generateImageDom('Imgur gallery with API token', $links);
+                    $dom = $this->generateImageDom('Imgur gallery with API token', $images);
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 } else {
                     $galleryDom = new \DomDocument();

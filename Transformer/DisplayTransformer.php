@@ -3,6 +3,7 @@
 namespace RedditImage\Transformer;
 
 use RedditImage\Content;
+use RedditImage\Media\Image;
 
 class DisplayTransformer extends AbstractTransformer {
     private $displayImage;
@@ -108,7 +109,7 @@ class DisplayTransformer extends AbstractTransformer {
             return;
         }
 
-        $dom = $this->generateImageDom($origin, [$href]);
+        $dom = $this->generateImageDom($origin, [new Image($href)]);
         return $dom->saveHTML();
     }
 
