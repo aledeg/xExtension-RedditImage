@@ -34,6 +34,9 @@ class InsertTransformer extends AbstractTransformer {
             ];
             $dom = $this->generateVideoDom('Imgur gifv', $videos);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
+        } elseif (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
+            $dom = $this->generateImageDom('Imgur image with URL token', ["$href.png"]);
+            $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', $href, $matches)) {
             try {
                 $jsonResponse = file_get_contents("https://api.gfycat.com/v1/gfycats/{$matches['token']}");
