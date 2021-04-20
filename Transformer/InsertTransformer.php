@@ -164,8 +164,4 @@ class InsertTransformer extends AbstractTransformer {
 
         return $entry;
     }
-
-    private function getModifiedContentLink($entry, $link) {
-        return preg_replace('#<a href="(?P<href>[^"]*)">\[link\]</a>#', "<a href=\"${link}\">[link]</a>", $entry->content());
-    }
 }
