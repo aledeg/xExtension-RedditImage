@@ -25,13 +25,13 @@ class InsertTransformer extends AbstractTransformer {
         }
 
         if (preg_match('#(jpg|png|gif|bmp)(\?.*)?$#', $href)) {
-            $dom = $this->generateImageDom('Image link', [new Image($href)]);
+            $dom = $this->generateDom('Image link', [new Image($href)]);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<gifv>.*imgur.com/[^/]*.)gifv$#', $href, $matches)) {
-            $dom = $this->generateVideoDom('Imgur gifv', [new Video('video/mp4', $matches['gifv']. "mp4")]);
+            $dom = $this->generateDom('Imgur gifv', [new Video('video/mp4', $matches['gifv']. "mp4")]);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
-            $dom = $this->generateImageDom('Imgur image with URL token', [new Image("$href.png")]);
+            $dom = $this->generateDom('Imgur image with URL token', [new Image("$href.png")]);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<gfycat>gfycat.com/)(.*/)*(?P<token>[^/\-.]*)#', $href, $matches)) {
             try {
@@ -44,7 +44,7 @@ class InsertTransformer extends AbstractTransformer {
 
                 $video = new Video('video/mp4', $arrayResponse['gfyItem']['mp4Url']);
                 $video->addSource('video/webm', $arrayResponse['gfyItem']['webmUrl']);
-                $dom = $this->generateVideoDom('Gfycat with token', [$video]);
+                $dom = $this->generateDom('Gfycat with token', [$video]);
                 $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("GFYCAT API ERROR - {$href}");
@@ -58,7 +58,7 @@ class InsertTransformer extends AbstractTransformer {
                     throw new Exception();
                 }
 
-                $dom = $this->generateVideoDom('Redgifs with token', [new Video('video/mp4', $arrayResponse['gfyItem']['mp4Url'])]);
+                $dom = $this->generateDom('Redgifs with token', [new Video('video/mp4', $arrayResponse['gfyItem']['mp4Url'])]);
                 $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("REDGIFS API ERROR - {$href}");
@@ -73,7 +73,7 @@ class InsertTransformer extends AbstractTransformer {
                 }
 
                 $videoUrl = $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url'];
-                $dom = $this->generateVideoDom('Reddit video', [new Video('video/mp4', str_replace('?source=fallback', '', $videoUrl))]);
+                $dom = $this->generateDom('Reddit video', [new Video('video/mp4', str_replace('?source=fallback', '', $videoUrl))]);
                 $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("REDDIT API ERROR - {$href}");
@@ -89,7 +89,7 @@ class InsertTransformer extends AbstractTransformer {
                         list(,$extension) = explode('/', $metadata['m']);
                         $images[] = new Image("https://i.redd.it/{$id}.{$extension}");
                     }
-                    $dom = $this->generateImageDom('Reddit gallery', $images);
+                    $dom = $this->generateDom('Reddit gallery', $images);
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 }
             } catch (Exception $e) {
@@ -112,15 +112,19 @@ class InsertTransformer extends AbstractTransformer {
                     }
                     curl_close($ch);
 
-                    $images = [];
+                    $media = [];
                     $json = json_decode($jsonString, true);
                     if (JSON_ERROR_NONE !== json_last_error()) {
                         throw new Exception();
                     }
-                    foreach ($json['data'] as $image) {
-                        $images[] = new Image($image['link']);
+                    foreach ($json['data'] as $medium) {
+                        if (false !== strpos($medium['type'], 'video')) {
+                            $media[] = new Video($medium['type'], $medium['link']);
+                        } elseif (false !== strpos($medium['type'], 'image')) {
+                            $media[] = new Image($medium['link']);
+                        }
                     }
-                    $dom = $this->generateImageDom('Imgur gallery with API token', $images);
+                    $dom = $this->generateDom('Imgur gallery with API token', $media);
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 } else {
                     $galleryDom = new \DomDocument();
@@ -130,7 +134,7 @@ class InsertTransformer extends AbstractTransformer {
                     foreach ($images as $image) {
                         $links[] = $image->getAttribute('content');
                     }
-                    $dom = $this->generateImageDom('Imgur gallery without API token', $links);
+                    $dom = $this->generateDom('Imgur gallery without API token', $links);
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 }
             } catch (Exception $e) {

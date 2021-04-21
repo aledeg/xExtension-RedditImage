@@ -110,7 +110,7 @@ class DisplayTransformer extends AbstractTransformer {
             return;
         }
 
-        $dom = $this->generateImageDom($origin, [new Image($href)]);
+        $dom = $this->generateDom($origin, [new Image($href)]);
         return $dom->saveHTML();
     }
 
