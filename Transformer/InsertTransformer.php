@@ -4,6 +4,7 @@ namespace RedditImage\Transformer;
 
 use RedditImage\Content;
 use RedditImage\Media\Image;
+use RedditImage\Media\Video;
 
 class InsertTransformer extends AbstractTransformer {
     private $imgurClientId;
@@ -27,13 +28,7 @@ class InsertTransformer extends AbstractTransformer {
             $dom = $this->generateImageDom('Image link', [new Image($href)]);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<gifv>.*imgur.com/[^/]*.)gifv$#', $href, $matches)) {
-            $videos = [
-                [
-                    'link' => $matches['gifv']. "mp4",
-                    'format' => 'video/mp4',
-                ]
-            ];
-            $dom = $this->generateVideoDom('Imgur gifv', $videos);
+            $dom = $this->generateVideoDom('Imgur gifv', [new Video('video/mp4', $matches['gifv']. "mp4")]);
             $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
         } elseif (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
             $dom = $this->generateImageDom('Imgur image with URL token', [new Image("$href.png")]);
@@ -47,17 +42,9 @@ class InsertTransformer extends AbstractTransformer {
                     throw new Exception();
                 }
 
-                $videos = [
-                    [
-                        'link' => $arrayResponse['gfyItem']['mp4Url'],
-                        'format' => 'video/mp4',
-                    ],
-                    [
-                        'link' => $arrayResponse['gfyItem']['webmUrl'],
-                        'format' => 'video/webm',
-                    ],
-                ];
-                $dom = $this->generateVideoDom('Gfycat with token', $videos);
+                $video = new Video('video/mp4', $arrayResponse['gfyItem']['mp4Url']);
+                $video->addSource('video/webm', $arrayResponse['gfyItem']['webmUrl']);
+                $dom = $this->generateVideoDom('Gfycat with token', [$video]);
                 $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("GFYCAT API ERROR - {$href}");
@@ -71,13 +58,7 @@ class InsertTransformer extends AbstractTransformer {
                     throw new Exception();
                 }
 
-                $videos = [
-                    [
-                        'link' => $arrayResponse['gfyItem']['mp4Url'],
-                        'format' => 'video/mp4',
-                    ],
-                ];
-                $dom = $this->generateVideoDom('Redgifs with token', $videos);
+                $dom = $this->generateVideoDom('Redgifs with token', [new Video('video/mp4', $arrayResponse['gfyItem']['mp4Url'])]);
                 $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("REDGIFS API ERROR - {$href}");
@@ -92,13 +73,7 @@ class InsertTransformer extends AbstractTransformer {
                 }
 
                 $videoUrl = $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url'];
-                $videos = [
-                    [
-                        'link' => str_replace('?source=fallback', '', $videoUrl),
-                        'format' => 'video/mp4',
-                    ]
-                ];
-                $dom = $this->generateVideoDom('Reddit video', $videos);
+                $dom = $this->generateVideoDom('Reddit video', [new Video('video/mp4', str_replace('?source=fallback', '', $videoUrl))]);
                 $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("REDDIT API ERROR - {$href}");

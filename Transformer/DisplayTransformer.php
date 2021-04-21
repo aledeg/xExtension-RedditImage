@@ -4,6 +4,7 @@ namespace RedditImage\Transformer;
 
 use RedditImage\Content;
 use RedditImage\Media\Image;
+use RedditImage\Media\Video;
 
 class DisplayTransformer extends AbstractTransformer {
     private $displayImage;
@@ -121,36 +122,25 @@ class DisplayTransformer extends AbstractTransformer {
             return;
         }
 
-        $dom = new \DomDocument();
-
-        $div = $dom->appendChild($dom->createElement('div'));
-        $div->setAttribute('class', 'reddit-image figure');
-
-        $div->appendChild($dom->createComment("xExtension-RedditImage | DisplayTransformer | $origin"));
-
-        $video = $div->appendChild($dom->createElement('video'));
-        $video->setAttribute('controls', true);
-        $video->setAttribute('preload', 'metadata');
-        $video->setAttribute('class', 'reddit-image');
-        $video->setAttribute('muted', $this->mutedVideo);
-
         $mp4Url = "{$baseUrl}mp4";
         if ($this->isAccessible($mp4Url)) {
-            $mp4 = $video->appendChild($dom->createElement('source'));
-            $mp4->setAttribute('src', $mp4Url);
-            $mp4->setAttribute('type', 'video/mp4');
+            $dom = $this->generateDom($origin, [new Video('video/mp4', $mp4Url)]);
+            $videos = $dom->getElementsByTagName('video');
+            foreach ($videos as $video) {
+                $video->setAttribute('muted', true);
+            }
             return $dom->saveHTML();
         }
 
         $webmUrl = "{$baseUrl}webm";
         if ($this->isAccessible($webmUrl)) {
-            $webm = $video->appendChild($dom->createElement('source'));
-            $webm->setAttribute('src', $webmUrl);
-            $webm->setAttribute('type', 'video/webm');
+            $dom = $this->generateDom($origin, [new Video('video/webm', $webmUrl)]);
+            $videos = $dom->getElementsByTagName('video');
+            foreach ($videos as $video) {
+                $video->setAttribute('muted', true);
+            }
             return $dom->saveHTML();
         }
-
-        return;
     }
 
     /**

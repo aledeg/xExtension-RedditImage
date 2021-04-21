@@ -3,6 +3,7 @@
 namespace RedditImage\Transformer;
 
 use RedditImage\Media\Image;
+use RedditImage\Media\Video;
 
 abstract class AbstractTransformer {
     const MATCH_REDDIT = 'reddit.com';
@@ -55,10 +56,10 @@ abstract class AbstractTransformer {
 
     /**
      * @param string $origin
-     * @param array $details
+     * @param array $media
      * @return \DomDocument
      */
-    protected function generateVideoDom($origin, $details = []) {
+    protected function generateVideoDom($origin, $media = []) {
         $dom = new \DomDocument();
 
         $div = $dom->appendChild($dom->createElement('div'));
@@ -66,15 +67,17 @@ abstract class AbstractTransformer {
 
         $div->appendChild($dom->createComment($this->getOriginComment($origin)));
 
-        $video = $div->appendChild($dom->createElement('video'));
-        $video->setAttribute('controls', true);
-        $video->setAttribute('preload', 'metadata');
-        $video->setAttribute('class', 'reddit-image');
+        foreach ($media as $medium) {
+            $video = $div->appendChild($dom->createElement('video'));
+            $video->setAttribute('controls', true);
+            $video->setAttribute('preload', 'metadata');
+            $video->setAttribute('class', 'reddit-image');
 
-        foreach ($details as $detail) {
-            $source = $video->appendChild($dom->createElement('source'));
-            $source->setAttribute('src', $detail['link']);
-            $source->setAttribute('type', $detail['format']);
+            foreach ($medium->getSources() as $format => $url) {
+                $source = $video->appendChild($dom->createElement('source'));
+                $source->setAttribute('src', $url);
+                $source->setAttribute('type', $format);
+            }
         }
 
         return $dom;
