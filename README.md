@@ -14,8 +14,8 @@ At the moment, the following resources are recognized:
 4 | links finished by webm, mp4 | video | full
 5 | gfycat links finished with a token | video | full
 6 | redgifs links finished with a token | video | full
-7 | reddit links finished with a token | video | limited
-8 | reddit image galleries | image | limited
+7 | reddit links finished with a token | video | limited (no audio)
+8 | reddit image galleries | image | full
 9 | imgur image galleries | image | full with API client id; partial without
 
 ## Configuration
@@ -43,12 +43,12 @@ Imgur client id | Imgur API client id | _none_
 - not compatible with PHP 5
 - loaded content can not be reprocessed
 - code is still hackish
-- videos extracted from v.redd.it do not have audio. The audio is added by the current extension but is not linked to the video (and will never be). You can still enjoy the audio by linking it yourself with the help of the CustomJS extension. Here is a quick snippet to trigger the sound with the video (tested only in Firefox console):
+- videos extracted from v.redd.it do not have audio. The audio is added by the current extension but is not linked to the video (and will never be). You can still enjoy the audio by linking it yourself with the help of the CustomJS extension. Here is a quick snippet to sync the sound with the video (tested only in Firefox console):
 ```js
 document.querySelectorAll('video.reddit-image').forEach(element => {
-  element.addEventListener('play', event => {
-    event.target.querySelector('audio').play();
-  })
+  element.addEventListener('play', event => { event.target.querySelector('audio').play(); })
+  element.addEventListener('pause', event => { event.target.querySelector('audio').pause(); })
+  element.addEventListener('seeking', event => { event.target.querySelector('audio').currentTime = event.target.currentTime })
 });
 ```
-**Note**: This is only an example. It does not support videos loaded after the initial call. It does not support other actions on the video. If you need to make it work, you'll have to figure how. You can still provide a documentation PR if you have something worth sharing.
+**Note**: This is only an example. It might not supports every scenarii. If you need to make it work, you'll have to figure how. You can still provide a documentation PR if you have something worth sharing.
