@@ -72,8 +72,10 @@ class InsertTransformer extends AbstractTransformer {
                     throw new Exception();
                 }
 
-                $videoUrl = $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url'];
-                $dom = $this->generateDom('Reddit video', [new Video('video/mp4', str_replace('?source=fallback', '', $videoUrl))]);
+                $videoUrl = str_replace('?source=fallback', '', $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url']);
+                $audioTrack = preg_replace('#DASH_.+\.mp4#', 'DASH_audio.mp4', $videoUrl);
+
+                $dom = $this->generateDom('Reddit video', [new Video('video/mp4', $videoUrl, $audioTrack)]);
                 $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
             } catch (Exception $e) {
                 Minz_Log::error("REDDIT API ERROR - {$href}");

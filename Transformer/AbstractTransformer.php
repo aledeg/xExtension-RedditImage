@@ -53,6 +53,13 @@ abstract class AbstractTransformer {
                 $video->setAttribute('preload', 'metadata');
                 $video->setAttribute('class', 'reddit-image');
 
+                if ($medium->hasAudioTrack()) {
+                    $audio = $video->appendChild($dom->createElement('audio'));
+                    $audio->setAttribute('controls', true);
+                    $source = $audio->appendChild($dom->createElement('source'));
+                    $source->setAttribute('src', $medium->getAudioTrack());
+                }
+
                 foreach ($medium->getSources() as $format => $url) {
                     $source = $video->appendChild($dom->createElement('source'));
                     $source->setAttribute('src', $url);

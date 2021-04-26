@@ -18,11 +18,7 @@ At the moment, the following resources are recognized:
 8 | reddit image galleries | image | limited
 9 | imgur image galleries | image | full with API client id; partial without
 
-> **Known limitation**:
-> - not compatible with PHP 5
-> - loaded content can not be reprocessed
-> - code is still hackish
-
+## Configuration
 ### Display configuration
 
 Item | Detail | Default
@@ -42,3 +38,17 @@ When the *display original content* option is set to *true*, text content will b
 Item | Detail | Default
 -----|--------|--------
 Imgur client id | Imgur API client id | _none_
+
+## Known limitation
+- not compatible with PHP 5
+- loaded content can not be reprocessed
+- code is still hackish
+- videos extracted from v.redd.it do not have audio. The audio is added by the current extension but is not linked to the video (and will never be). You can still enjoy the audio by linking it yourself with the help of the CustomJS extension. Here is a quick snippet to trigger the sound with the video (tested only in Firefox console):
+```js
+document.querySelectorAll('video.reddit-image').forEach(element => {
+  element.addEventListener('play', event => {
+    event.target.querySelector('audio').play();
+  })
+});
+```
+**Note**: This is only an example. It does not support videos loaded after the initial call. It does not support other actions on the video. If you need to make it work, you'll have to figure how. You can still provide a documentation PR if you have something worth sharing.
