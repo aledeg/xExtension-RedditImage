@@ -50,19 +50,20 @@ class InsertTransformer extends AbstractTransformer {
                 Minz_Log::error("GFYCAT API ERROR - {$href}");
             }
         } elseif (preg_match('#(?P<redgifs>redgifs.com/)(.*/)*(?P<token>[^/\-.]*)#', $href, $matches)) {
-            try {
-                $jsonResponse = file_get_contents("https://api.redgifs.com/v1/gfycats/{$matches['token']}");
-                $arrayResponse = json_decode($jsonResponse, true);
+            // API has changed and this code does not work anymore.
+            // try {
+            //     $jsonResponse = file_get_contents("https://api.redgifs.com/v1/gfycats/{$matches['token']}");
+            //     $arrayResponse = json_decode($jsonResponse, true);
 
-                if (JSON_ERROR_NONE !== json_last_error()) {
-                    throw new Exception();
-                }
+            //     if (JSON_ERROR_NONE !== json_last_error()) {
+            //         throw new Exception();
+            //     }
 
-                $dom = $this->generateDom('Redgifs with token', [new Video('video/mp4', $arrayResponse['gfyItem']['mp4Url'])]);
-                $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
-            } catch (Exception $e) {
-                Minz_Log::error("REDGIFS API ERROR - {$href}");
-            }
+            //     $dom = $this->generateDom('Redgifs with token', [new Video('video/mp4', $arrayResponse['gfyItem']['mp4Url'])]);
+            //     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
+            // } catch (Exception $e) {
+            //     Minz_Log::error("REDGIFS API ERROR - {$href}");
+            // }
         } elseif (preg_match('#v.redd.it#', $href)) {
             try {
                 $jsonResponse = file_get_contents("{$content->getCommentsLink()}.json");
