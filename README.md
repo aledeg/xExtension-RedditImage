@@ -51,4 +51,4 @@ document.querySelectorAll('video.reddit-image').forEach(element => {
   element.addEventListener('seeking', event => { event.target.querySelector('audio').currentTime = event.target.currentTime })
 });
 ```
-**Note**: This is only an example. It might not supports every scenarii. If you need to make it work, you'll have to figure how. You can still provide a documentation PR if you have something worth sharing.
+**Note**: This is only an example. It might not supports every scenarios. If you need to make it work, you'll have to figure how. You can still provide a documentation PR if you have something worth sharing.
