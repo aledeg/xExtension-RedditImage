@@ -80,7 +80,9 @@ class Content {
      * Extract metadata available in the feed raw content
      *
      * Here the search is done with a regex instead of the DOM since the raw content
-     * has different ways to represent its content.
+     * has different ways to represent its content. The metadata contains the link
+     * to the author page, the link to the current message, and the link to the
+     * current message comment section.
      */
     private function extractMetadata() {
         if (preg_match('#(?P<metadata>submitted.*</span>)#', $this->content, $matches)) {
@@ -113,13 +115,16 @@ class Content {
     /**
      * Extract the real content from the feed raw content
      *
-     * When the raw content does not contain a table, that means it has some
-     * real content (most of the time, it's text).
+     * The real content is contained in a div with the md class attribute. The
+     * class attribute is sanitized to data-sanitized-class attribute when
+     * processed by SimplePie.
      */
     private function extractReal() {
-        $nodes = $this->dom->getElementsByTagName('table');
-        if (0 === $nodes->length) {
-            $this->real = str_replace($this->metadata, '', $this->raw);
+        $xpath = new \DOMXpath($this->dom);
+        $mdNode = $xpath->query("//div[contains(@data-sanitized-class,'md')]");
+        if (1 === $mdNode->length) {
+            $node = $mdNode->item(0);
+            $this->real = $this->dom->saveHTML($node);
         }
     }
 }
