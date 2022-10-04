@@ -61,8 +61,8 @@ class DisplayTransformer extends AbstractTransformer {
             return $preprocessed;
         }
 
-        $dom = new \DomDocument();
-        $dom->loadHTML($preprocessed, LIBXML_NOERROR);
+        $dom = new \DomDocument('1.0', 'UTF-8');
+        $dom->loadHTML(mc_convert_encoding($preprocessed, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOERROR);
 
         $videos = $dom->getElementsByTagName('video');
         foreach ($videos as $video) {
@@ -164,7 +164,7 @@ class DisplayTransformer extends AbstractTransformer {
      * @return string
      */
     private function getNewLinkContent($href) {
-        $dom = new \DomDocument();
+        $dom = new \DomDocument('1.0', 'UTF-8');
 
         $p = $dom->appendChild($dom->createElement('p'));
         $a = $p->appendChild($dom->createElement('a'));

@@ -130,8 +130,8 @@ class InsertTransformer extends AbstractTransformer {
                     $dom = $this->generateDom('Imgur gallery with API token', $media);
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 } else {
-                    $galleryDom = new \DomDocument();
-                    $galleryDom->loadHTML(file_get_contents($href), LIBXML_NOERROR);
+                    $galleryDom = new \DomDocument('1.0', 'UTF-8');
+                    $galleryDom->loadHTML(mb_convert_encoding(file_get_contents($href), 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOERROR);
                     $galleryXpath = new \DomXpath($galleryDom);
                     $images = $galleryXpath->query("//meta[@name='twitter:image']");
                     foreach ($images as $image) {

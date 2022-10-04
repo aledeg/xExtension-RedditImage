@@ -35,7 +35,7 @@ abstract class AbstractTransformer {
      * @return \DomDocument
      */
     protected function generateDom($origin, $media = []) {
-        $dom = new \DomDocument();
+        $dom = new \DomDocument('1.0', 'UTF-8');
 
         $div = $dom->appendChild($dom->createElement('div'));
         $div->setAttribute('class', 'reddit-image figure');
