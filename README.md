@@ -13,10 +13,12 @@ At the moment, the following resources are recognized:
 3 | imgur links finished with a token | image | partial
 4 | links finished by webm, mp4 | video | full
 5 | gfycat links finished with a token | video | full
-6 | redgifs links finished with a token | video | full
+6 | redgifs links finished with a token | video | none
 7 | reddit links finished with a token | video | limited (no audio)
 8 | reddit image galleries | image | full
 9 | imgur image galleries | image | full with API client id; partial without
+
+**Note** the support from redgifs links with a token went from full to none after a change in their API.
 
 ## Configuration
 ### Display configuration
