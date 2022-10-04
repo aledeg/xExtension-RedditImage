@@ -62,7 +62,7 @@ class DisplayTransformer extends AbstractTransformer {
         }
 
         $dom = new \DomDocument('1.0', 'UTF-8');
-        $dom->loadHTML(mc_convert_encoding($preprocessed, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOERROR);
+        $dom->loadHTML($preprocessed, LIBXML_NOERROR);
 
         $videos = $dom->getElementsByTagName('video');
         foreach ($videos as $video) {
