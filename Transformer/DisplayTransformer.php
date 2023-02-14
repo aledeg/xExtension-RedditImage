@@ -93,7 +93,7 @@ class DisplayTransformer extends AbstractTransformer {
         }
         // Add image tag in content when the href links to an imgur image
         if (preg_match('#(?P<imgur>imgur.com/[^/]*)$#', $href)) {
-            $href = "${href}.png";
+            $href = "{$href}.png";
             return $this->getNewImageContent($href, 'Imgur token');
         }
         // Add video tag in content when the href links to a video
