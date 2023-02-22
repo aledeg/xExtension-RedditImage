@@ -131,7 +131,7 @@ class InsertTransformer extends AbstractTransformer {
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 } else {
                     $galleryDom = new \DomDocument('1.0', 'UTF-8');
-                    $galleryDom->loadHTML(mb_convert_encoding(file_get_contents($href), 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOERROR);
+                    $galleryDom->loadHTML(htmlentities($href, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8'), LIBXML_NOERROR);
                     $galleryXpath = new \DomXpath($galleryDom);
                     $images = $galleryXpath->query("//meta[@name='twitter:image']");
                     foreach ($images as $image) {

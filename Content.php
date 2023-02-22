@@ -17,7 +17,7 @@ class Content {
         $this->raw = $content;
 
         $this->dom = new \DomDocument('1.0', 'UTF-8');
-        $this->dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOERROR);
+        $this->dom->loadHTML(htmlentities($content, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8'), LIBXML_NOERROR);
 
         $this->splitContent();
         $this->extractMetadata();
