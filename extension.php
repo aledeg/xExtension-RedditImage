@@ -22,7 +22,7 @@ class RedditImageExtension extends Minz_Extension {
     }
 
     public function init() {
-        spl_autoload_register(array($this, 'autoload'));
+        spl_autoload_register([$this, 'autoload']);
 
         $this->registerTranslates();
 
@@ -37,8 +37,8 @@ class RedditImageExtension extends Minz_Extension {
         $this->displayTransformer = new DisplayTransformer($this->getDisplayImage(), $this->getDisplayVideo(), $this->getMutedVideo(), $this->getDisplayOriginal(), $this->getDisplayMetadata());
         $this->insertTransformer = new InsertTransformer($this->getImgurClientId());
 
-        $this->registerHook('entry_before_display', array($this->displayTransformer, 'transform'));
-        $this->registerHook('entry_before_insert', array($this->insertTransformer, 'transform'));
+        $this->registerHook('entry_before_display', [$this->displayTransformer, 'transform']);
+        $this->registerHook('entry_before_insert', [$this->insertTransformer, 'transform']);
     }
 
     public function handleConfigureAction() {
