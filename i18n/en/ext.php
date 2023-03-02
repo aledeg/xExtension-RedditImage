@@ -7,7 +7,7 @@ return [
         'display_original' => 'Display original content',
         'display_video' => 'Display videos',
         'image_height' => 'Media height',
-        'image_height_unit' => '%% of the viewport',
+        'image_height_unit' => '% of the viewport',
         'imgur_client_id' => 'Imgur client id',
         'muted_video' => 'Muted video',
         'section' => [

@@ -7,7 +7,7 @@ return [
         'display_original' => 'Originalinhalt anzeigen',
         'display_video' => 'Videos anzeigen',
         'image_height' => 'Max. Höhe der Mediendatei',
-        'image_height_unit' => '%% des Darstellungsbereichs (Viewport)',
+        'image_height_unit' => '% des Darstellungsbereichs (Viewport)',
         'imgur_client_id' => 'Imgur client id',
         'muted_video' => 'Videos stummschalten',
         'section' => [
