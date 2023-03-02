@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RedditImage\Transformer;
 
 use RedditImage\Media\Image;
