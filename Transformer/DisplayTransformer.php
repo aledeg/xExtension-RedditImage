@@ -36,6 +36,9 @@ class DisplayTransformer extends AbstractTransformer {
         $original = $this->displayOriginal ? $content->getRaw() : '';
         $metadata = $this->displayMetadata ? "<div>{$content->getMetadata()}</div>" : '';
 
+        $entry->_attributes('thumbnail', null);
+        $entry->_attributes('enclosures', null);
+
         $entry->_content("{$improved}{$content->getReal()}{$original}{$metadata}");
         $entry->_link($content->getContentLink());
 
