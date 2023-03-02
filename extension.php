@@ -4,12 +4,12 @@ use RedditImage\Transformer\DisplayTransformer;
 use RedditImage\Transformer\InsertTransformer;
 
 class RedditImageExtension extends Minz_Extension {
-    const DEFAULT_IMAGEHEIGHT = 70;
-    const DEFAULT_MUTEDVIDEO = true;
-    const DEFAULT_DISPLAYIMAGE = true;
-    const DEFAULT_DISPLAYVIDEO = true;
-    const DEFAULT_DISPLAYORIGINAL = true;
-    const DEFAULT_DISPLAYMETADATA = false;
+    private const DEFAULT_IMAGEHEIGHT = 70;
+    private const DEFAULT_MUTEDVIDEO = true;
+    private const DEFAULT_DISPLAYIMAGE = true;
+    private const DEFAULT_DISPLAYVIDEO = true;
+    private const DEFAULT_DISPLAYORIGINAL = true;
+    private const DEFAULT_DISPLAYMETADATA = false;
 
     private $displayTransformer;
     private $insertTransformer;

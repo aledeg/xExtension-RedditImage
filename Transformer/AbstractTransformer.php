@@ -6,7 +6,7 @@ use RedditImage\Media\Image;
 use RedditImage\Media\Video;
 
 abstract class AbstractTransformer {
-    const MATCH_REDDIT = 'reddit.com';
+    protected const MATCH_REDDIT = 'reddit.com';
 
     /**
      * @return bool
