@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace RedditImage\Transformer;
 
+use RedditImage\Media\DomElementInterface;
 use RedditImage\Media\Image;
 use RedditImage\Media\Video;
 
@@ -45,28 +46,8 @@ abstract class AbstractTransformer {
         $div->appendChild($dom->createComment($this->getOriginComment($origin)));
 
         foreach ($media as $medium) {
-            if ($medium instanceof Image) {
-                $img = $div->appendChild($dom->createElement('img'));
-                $img->setAttribute('src', $medium->getUrl());
-                $img->setAttribute('class', 'reddit-image');
-            } elseif ($medium instanceof Video) {
-                $video = $div->appendChild($dom->createElement('video'));
-                $video->setAttribute('controls', true);
-                $video->setAttribute('preload', 'metadata');
-                $video->setAttribute('class', 'reddit-image');
-
-                if ($medium->hasAudioTrack()) {
-                    $audio = $video->appendChild($dom->createElement('audio'));
-                    $audio->setAttribute('controls', true);
-                    $source = $audio->appendChild($dom->createElement('source'));
-                    $source->setAttribute('src', $medium->getAudioTrack());
-                }
-
-                foreach ($medium->getSources() as $format => $url) {
-                    $source = $video->appendChild($dom->createElement('source'));
-                    $source->setAttribute('src', $url);
-                    $source->setAttribute('type', $format);
-                }
+            if ($medium instanceof DomElementInterface) {
+                $div->appendChild($medium->toDomElement($dom));
             }
         }
 

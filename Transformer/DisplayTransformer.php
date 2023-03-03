@@ -136,7 +136,7 @@ class DisplayTransformer extends AbstractTransformer {
             $dom = $this->generateDom($origin, [new Video('video/mp4', $mp4Url)]);
             $videos = $dom->getElementsByTagName('video');
             foreach ($videos as $video) {
-                $video->setAttribute('muted', true);
+                $video->setAttribute('muted', 'true');
             }
             return $dom->saveHTML();
         }
@@ -146,7 +146,7 @@ class DisplayTransformer extends AbstractTransformer {
             $dom = $this->generateDom($origin, [new Video('video/webm', $webmUrl)]);
             $videos = $dom->getElementsByTagName('video');
             foreach ($videos as $video) {
-                $video->setAttribute('muted', true);
+                $video->setAttribute('muted', 'true');
             }
             return $dom->saveHTML();
         }
