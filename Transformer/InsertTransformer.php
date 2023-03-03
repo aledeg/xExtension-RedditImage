@@ -76,7 +76,7 @@ class InsertTransformer extends AbstractTransformer {
                     throw new Exception();
                 }
 
-                $videoUrl = str_replace('?source=fallback', '', $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url']);
+                $videoUrl = str_replace('?source=fallback', '', $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url'] ?? null);
                 $audioTrack = preg_replace('#DASH_.+\.mp4#', 'DASH_audio.mp4', $videoUrl);
 
                 $dom = $this->generateDom('Reddit video', [new Video('video/mp4', $videoUrl, $audioTrack)]);
