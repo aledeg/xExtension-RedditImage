@@ -71,11 +71,11 @@ class DisplayTransformer extends AbstractTransformer {
 
         $videos = $dom->getElementsByTagName('video');
         foreach ($videos as $video) {
-            $video->setAttribute('muted', true);
+            $video->setAttribute('muted', 'true');
         }
         $audios = $dom->getElementsByTagName('audio');
         foreach ($audios as $audio) {
-            $audio->setAttribute('muted', true);
+            $audio->setAttribute('muted', 'true');
         }
 
         return $dom->saveHTML();

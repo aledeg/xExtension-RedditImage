@@ -29,7 +29,7 @@ class RedditImageExtension extends Minz_Extension {
         $this->registerTranslates();
 
         $current_user = Minz_Session::param('currentUser');
-        $filename = 'style.' . $current_user . '.css';
+        $filename = "style.{$current_user}.css";
         $filepath = join_path($this->getPath(), 'static', $filename);
 
         if (file_exists($filepath)) {
@@ -59,10 +59,10 @@ class RedditImageExtension extends Minz_Extension {
                 'imgurClientId' => Minz_Request::param('imgur-client-id'),
             ];
             $this->setUserConfiguration($configuration);
-            file_put_contents(join_path($this->getPath(), 'static', "style.{$current_user}.css"), sprintf(
-                'img.reddit-image, video.reddit-image {max-height:%svh;}',
-                $configuration['imageHeight']
-            ));
+            file_put_contents(
+                join_path($this->getPath(), 'static', "style.{$current_user}.css"),
+                "img.reddit-image, video.reddit-image {max-height:{$configuration['imageHeight']}vh;}",
+            );
         }
     }
 
