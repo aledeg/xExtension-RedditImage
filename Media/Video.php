@@ -39,7 +39,7 @@ class Video implements DomElementInterface {
 
         if ($this->hasAudioTrack()) {
             $audio = $video->appendChild($domDocument->createElement('audio'));
-            $audio->setAttribute('controls', true);
+            $audio->setAttribute('controls', 'true');
             $source = $audio->appendChild($domDocument->createElement('source'));
             $source->setAttribute('src', $this->getAudioTrack());
         }
