@@ -9,11 +9,11 @@ use RedditImage\Media\Image;
 use RedditImage\Media\Video;
 
 class DisplayTransformer extends AbstractTransformer {
-    private $displayImage;
-    private $displayVideo;
-    private $mutedVideo;
-    private $displayOriginal;
-    private $displayMetadata;
+    private bool $displayImage;
+    private bool $displayVideo;
+    private bool $mutedVideo;
+    private bool $displayOriginal;
+    private bool $displayMetadata;
 
     public function __construct(bool $displayImage, bool $displayVideo, bool $mutedVideo, bool $displayOriginal, bool $displayMetadata) {
         $this->displayImage = $displayImage;
@@ -23,6 +23,10 @@ class DisplayTransformer extends AbstractTransformer {
         $this->displayMetadata = $displayMetadata;
     }
 
+    /**
+     * @param Entry $entry
+     * @return Entry
+     */
     public function transform($entry) {
         if (false === $this->isRedditLink($entry)) {
             return $entry;
@@ -47,11 +51,7 @@ class DisplayTransformer extends AbstractTransformer {
         return $entry;
     }
 
-    /**
-     * @param Content $content
-     * @return string
-     */
-    private function getPreprocessedContent($content) {
+    private function getPreprocessedContent(Content $content): string {
         $preprocessed = $content->getPreprocessed();
         if (!$this->displayImage && false !== strpos($preprocessed, 'img')) {
             return '';
@@ -81,11 +81,7 @@ class DisplayTransformer extends AbstractTransformer {
         return $dom->saveHTML();
     }
 
-    /**
-     * @param Content $content
-     * @return string
-     */
-    private function getImprovedContent($content) {
+    private function getImprovedContent(Content $content): string {
         $href = $content->getContentLink();
 
         // Add image tag in content when the href links to an image
@@ -111,24 +107,18 @@ class DisplayTransformer extends AbstractTransformer {
         return '';
     }
 
-    /**
-     * @return string|null
-     */
-    private function getNewImageContent($href, $origin) {
+    private function getNewImageContent(string $href, string $origin): ?string {
         if (!$this->displayImage) {
-            return;
+            return null;
         }
 
         $dom = $this->generateDom($origin, [new Image($href)]);
         return $dom->saveHTML();
     }
 
-    /**
-     * @return string|null
-     */
-    private function getNewVideoContent($baseUrl, $origin) {
+    private function getNewVideoContent(string $baseUrl, string $origin): ?string {
         if (!$this->displayVideo) {
-            return;
+            return null;
         }
 
         $mp4Url = "{$baseUrl}mp4";
@@ -152,10 +142,7 @@ class DisplayTransformer extends AbstractTransformer {
         }
     }
 
-    /**
-     * @return bool
-     */
-    private function isAccessible($href) {
+    private function isAccessible(string $href): bool {
         $channel = curl_init($href);
         curl_setopt($channel, CURLOPT_NOBODY, true);
         curl_exec($channel);
@@ -165,10 +152,7 @@ class DisplayTransformer extends AbstractTransformer {
         return 200 === $httpCode;
     }
 
-    /**
-     * @return string
-     */
-    private function getNewLinkContent($href) {
+    private function getNewLinkContent(string $href): string {
         $dom = new \DomDocument('1.0', 'UTF-8');
 
         $p = $dom->appendChild($dom->createElement('p'));

@@ -7,14 +7,17 @@ use RedditImage\Media\Image;
 use RedditImage\Media\Video;
 
 class InsertTransformer extends AbstractTransformer {
-    private $imgurClientId;
+    private string $imgurClientId;
 
     public function __construct(string $imgurClientId = null) {
         $this->imgurClientId = $imgurClientId;
     }
 
+    /**
+     * @param Entry $entry
+     * @return Entry
+     */
     public function transform($entry) {
-
         if (false === $this->isRedditLink($entry)) {
             return $entry;
         }

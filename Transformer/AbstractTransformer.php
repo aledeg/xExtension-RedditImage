@@ -12,32 +12,24 @@ abstract class AbstractTransformer {
     protected const MATCH_REDDIT = 'reddit.com';
 
     /**
-     * @return bool
+     * @param Entry $entry
      */
-    protected function isRedditLink($entry) {
+    protected function isRedditLink($entry): bool {
         return (bool) strpos($entry->link(), static::MATCH_REDDIT);
     }
 
     /**
-     * @return object
+     * @return Entry
      */
     abstract public function transform($entry);
 
-    /**
-     * @return string
-     */
-    protected function getOriginComment($origin) {
+    protected function getOriginComment(string $origin): string {
         $className = (new \ReflectionClass($this))->getShortName();
 
         return "xExtension-RedditImage | $className | $origin";
     }
 
-    /**
-     * @param string $origin
-     * @param array $media
-     * @return \DomDocument
-     */
-    protected function generateDom($origin, $media = []) {
+    protected function generateDom(string $origin, array $media = []): \DomDocument {
         $dom = new \DomDocument('1.0', 'UTF-8');
 
         $div = $dom->appendChild($dom->createElement('div'));

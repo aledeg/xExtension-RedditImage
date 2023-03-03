@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace RedditImage;
 
 class Content {
-    private $content;
-    private $dom;
-    private $preprocessed = '';
-    private $metadata = '';
-    private $contentLink;
-    private $commentsLink;
-    private $raw;
-    private $real = '';
+    private string $content;
+    private \DomDocument $dom;
+    private string $preprocessed = '';
+    private string $metadata = '';
+    private ?string $contentLink;
+    private ?string $commentsLink;
+    private string $raw;
+    private string $real = '';
 
-    public function __construct($content) {
+    public function __construct(string $content) {
         $this->content = $content;
         $this->raw = $content;
 
@@ -27,35 +27,35 @@ class Content {
         $this->extractReal();
     }
 
-    public function getContentLink() {
+    public function getContentLink(): ?string {
         return $this->contentLink;
     }
 
-    public function getCommentsLink() {
+    public function getCommentsLink(): ?string {
         return $this->commentsLink;
     }
 
-    public function getPreprocessed() {
+    public function getPreprocessed(): string {
         return $this->preprocessed;
     }
 
-    public function getMetadata() {
+    public function getMetadata(): string {
         return $this->metadata;
     }
 
-    public function getRaw() {
+    public function getRaw(): string {
         return $this->raw;
     }
 
-    public function getReal() {
+    public function getReal(): string {
         return $this->real;
     }
 
-    public function hasBeenPreprocessed() {
+    public function hasBeenPreprocessed(): bool {
         return '' !== $this->preprocessed;
     }
 
-    public function hasReal() {
+    public function hasReal(): bool {
         return '' !== $this->real;
     }
 
@@ -66,7 +66,7 @@ class Content {
      * fetch quickly. For instance when API calls are involved. Thus we need to
      * separate the feed raw content from the preprocessed content.
      */
-    private function splitContent() {
+    private function splitContent(): void {
         $xpath = new \DOMXpath($this->dom);
         $redditImage = $xpath->query("//div[contains(@class,'reddit-image')]");
 
@@ -86,7 +86,7 @@ class Content {
      * to the author page, the link to the current message, and the link to the
      * current message comment section.
      */
-    private function extractMetadata() {
+    private function extractMetadata(): void {
         if (preg_match('#(?P<metadata>\s{3}submitted.*</span>)#', $this->content, $matches)) {
             $this->metadata = $matches['metadata'];
         }
@@ -99,7 +99,7 @@ class Content {
      *   - content link.
      *   - comments link.
      */
-    private function extractLinks() {
+    private function extractLinks(): void {
         $links = $this->dom->getElementsByTagName('a');
         foreach ($links as $link) {
             switch ($link->textContent) {
@@ -121,7 +121,7 @@ class Content {
      * class attribute is sanitized to data-sanitized-class attribute when
      * processed by SimplePie.
      */
-    private function extractReal() {
+    private function extractReal(): void {
         $xpath = new \DOMXpath($this->dom);
         $mdNode = $xpath->query("//div[contains(@data-sanitized-class,'md')]");
         if (1 === $mdNode->length) {

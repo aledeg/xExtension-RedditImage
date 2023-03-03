@@ -13,17 +13,17 @@ class RedditImageExtension extends Minz_Extension {
     private const DEFAULT_DISPLAYORIGINAL = true;
     private const DEFAULT_DISPLAYMETADATA = false;
 
-    private $displayTransformer;
-    private $insertTransformer;
+    private DisplayTransformer $displayTransformer;
+    private InsertTransformer $insertTransformer;
 
-    public function autoload($class_name) {
+    public function autoload($class_name): void {
         if (0 === strpos($class_name, 'RedditImage')) {
             $class_name = substr($class_name, 12);
             include $this->getPath() . DIRECTORY_SEPARATOR . str_replace('\\', '/', $class_name) . '.php';
         }
     }
 
-    public function init() {
+    public function init(): void {
         spl_autoload_register([$this, 'autoload']);
 
         $this->registerTranslates();
@@ -43,7 +43,7 @@ class RedditImageExtension extends Minz_Extension {
         $this->registerHook('entry_before_insert', [$this->insertTransformer, 'transform']);
     }
 
-    public function handleConfigureAction() {
+    public function handleConfigureAction(): void {
         $this->registerTranslates();
 
         $current_user = Minz_Session::param('currentUser');
@@ -66,31 +66,31 @@ class RedditImageExtension extends Minz_Extension {
         }
     }
 
-    public function getImageHeight() {
+    public function getImageHeight(): int {
         return $this->getUserConfigurationValue('imageHeight', static::DEFAULT_IMAGEHEIGHT);
     }
 
-    public function getMutedVideo() {
+    public function getMutedVideo(): bool {
         return $this->getUserConfigurationValue('mutedVideo', static::DEFAULT_MUTEDVIDEO);
     }
 
-    public function getDisplayImage() {
+    public function getDisplayImage(): bool {
         return $this->getUserConfigurationValue('displayImage', static::DEFAULT_DISPLAYIMAGE);
     }
 
-    public function getDisplayVideo() {
+    public function getDisplayVideo(): bool {
         return $this->getUserConfigurationValue('displayVideo', static::DEFAULT_DISPLAYVIDEO);
     }
 
-    public function getDisplayOriginal() {
+    public function getDisplayOriginal(): bool {
         return $this->getUserConfigurationValue('displayOriginal', static::DEFAULT_DISPLAYORIGINAL);
     }
 
-    public function getDisplayMetadata() {
+    public function getDisplayMetadata(): bool {
         return $this->getUserConfigurationValue('displayMetadata', static::DEFAULT_DISPLAYMETADATA);
     }
 
-    public function getImgurClientId() {
+    public function getImgurClientId(): string {
         return $this->getUserConfigurationValue('imgurClientId', '');
     }
 }
