@@ -1,7 +1,7 @@
 # xExtension-RedditImage
 A FreshRSS extension to process Reddit feeds
 
-If the the link in the content is recognized, the content is replaced by the linked resource (images or videos).
+If the link in the content is recognized, the content is replaced by the linked resource (images or videos).
 If the link in the content is not recognized, the link used in the title is modified to link to the content resource instead of the reddit comment page.
 
 At the moment, the following resources are recognized:
@@ -41,8 +41,8 @@ Item | Detail | Default
 -----|--------|--------
 Imgur client id | Imgur API client id | _none_
 
-## Known limitation
-- not compatible with PHP 5
+## Known limitations
+- not compatible with PHP versions under 7.2
 - loaded content can not be reprocessed
 - code is still hackish
 - videos extracted from v.redd.it do not have audio. The audio is added by the current extension but is not linked to the video (and will never be). You can still enjoy the audio by linking it yourself with the help of the CustomJS extension. Here is a quick snippet to sync the sound with the video (tested only in Firefox console):
