@@ -19,7 +19,10 @@ class Content {
         $this->raw = $content;
 
         $this->dom = new \DomDocument('1.0', 'UTF-8');
-        $this->dom->loadHTML(htmlspecialchars_decode(htmlentities(html_entity_decode($content))), LIBXML_NOERROR);
+        $this->dom->loadHTML(
+            htmlspecialchars_decode(htmlentities(html_entity_decode($content))),
+            LIBXML_NOERROR
+        );
 
         $this->splitContent();
         $this->extractMetadata();
@@ -72,9 +75,8 @@ class Content {
 
         if (1 === $redditImage->length) {
             $node = $redditImage->item(0);
-            $this->preprocessed = $this->dom->saveHTML($node);
-            $node->parentNode->removeChild($node);
-            $this->raw = $this->dom->saveHTML();
+            $this->preprocessed = $this->dom->saveHTML($node->parentNode->firstChild);
+            $this->raw = $this->dom->saveHTML($node->parentNode->lastChild);
         }
     }
 

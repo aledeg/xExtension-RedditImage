@@ -19,16 +19,8 @@ class Video implements DomElementInterface {
         $this->sources[$type] = $url;
     }
 
-    public function getSources(): array {
-        return $this->sources;
-    }
-
-    public function hasAudioTrack(): bool {
+    private function hasAudioTrack(): bool {
         return null !== $this->audioTrack;
-    }
-
-    public function getAudioTrack(): string {
-        return $this->audioTrack;
     }
 
     public function toDomElement(\DomDocument $domDocument): \DomElement {
@@ -41,10 +33,10 @@ class Video implements DomElementInterface {
             $audio = $video->appendChild($domDocument->createElement('audio'));
             $audio->setAttribute('controls', 'true');
             $source = $audio->appendChild($domDocument->createElement('source'));
-            $source->setAttribute('src', $this->getAudioTrack());
+            $source->setAttribute('src', $this->audioTrack);
         }
 
-        foreach ($this->getSources() as $format => $url) {
+        foreach ($this->sources as $format => $url) {
             $source = $video->appendChild($domDocument->createElement('source'));
             $source->setAttribute('src', $url);
             $source->setAttribute('type', $format);
