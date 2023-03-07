@@ -2,6 +2,8 @@
 
 namespace RedditImage\Transformer;
 
+use \Exception;
+use Minz_Log;
 use RedditImage\Content;
 use RedditImage\Media\Image;
 use RedditImage\Media\Video;
@@ -14,8 +16,8 @@ class InsertTransformer extends AbstractTransformer {
     }
 
     /**
-     * @param Entry $entry
-     * @return Entry
+     * @param FreshRSS_Entry $entry
+     * @return FreshRSS_Entry
      */
     public function transform($entry) {
         if (false === $this->isRedditLink($entry)) {

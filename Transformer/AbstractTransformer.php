@@ -12,14 +12,14 @@ abstract class AbstractTransformer {
     protected const MATCH_REDDIT = 'reddit.com';
 
     /**
-     * @param Entry $entry
+     * @param FreshRSS_Entry $entry
      */
     protected function isRedditLink($entry): bool {
         return (bool) strpos($entry->link(), static::MATCH_REDDIT);
     }
 
     /**
-     * @return Entry
+     * @return FreshRSS_Entry
      */
     abstract public function transform($entry);
 

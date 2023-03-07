@@ -24,8 +24,8 @@ class DisplayTransformer extends AbstractTransformer {
     }
 
     /**
-     * @param Entry $entry
-     * @return Entry
+     * @param FreshRSS_Entry $entry
+     * @return FreshRSS_Entry
      */
     public function transform($entry) {
         if (false === $this->isRedditLink($entry)) {
