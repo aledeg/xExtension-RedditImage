@@ -54,6 +54,15 @@
 		</div>
 	</div>
 
+	<div class="form-group">
+		<div class="group-controls">
+			<label class="checkbox" for="display-thumbnails">
+				<input type="checkbox" name="display-thumbnails" id="display-thumbnails" value="1" <?= $this->getDisplayThumbnails() ? 'checked=true' : '' ?>/>
+				<?= _t('ext.reddit_image.display_thumbnails'); ?>
+			</label>
+		</div>
+	</div>
+
 	<div class="form-group form-actions">
 		<div class="group-controls">
 			<button type="submit" class="btn btn-important"><?= _t('gen.action.submit'); ?></button>

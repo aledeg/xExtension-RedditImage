@@ -5,6 +5,7 @@ return [
         'display_image' => 'Afficher les images',
         'display_metadata' => 'Afficher les métadonnées',
         'display_original' => 'Afficher le contenu initial',
+        'display_thumbnails' => 'Afficher les vignettes',
         'display_video' => 'Afficher les vidéos',
         'help' => [
             'imgur_client_id' => 'Lire la <a href="https://apidocs.imgur.com/#authorization-and-oauth">documentation de l’API Imgur</a> pour plus d’information.',

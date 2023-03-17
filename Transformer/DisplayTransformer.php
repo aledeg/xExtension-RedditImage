@@ -14,13 +14,15 @@ class DisplayTransformer extends AbstractTransformer {
     private bool $mutedVideo;
     private bool $displayOriginal;
     private bool $displayMetadata;
+    private bool $displayThumbnails;
 
-    public function __construct(bool $displayImage, bool $displayVideo, bool $mutedVideo, bool $displayOriginal, bool $displayMetadata) {
+    public function __construct(bool $displayImage, bool $displayVideo, bool $mutedVideo, bool $displayOriginal, bool $displayMetadata, bool $displayThumbnails) {
         $this->displayImage = $displayImage;
         $this->displayVideo = $displayVideo;
         $this->mutedVideo = $mutedVideo;
         $this->displayOriginal = $displayOriginal;
         $this->displayMetadata = $displayMetadata;
+        $this->displayThumbnails = $displayThumbnails;
     }
 
     /**
@@ -42,8 +44,10 @@ class DisplayTransformer extends AbstractTransformer {
         $original = $this->displayOriginal ? $content->getRaw() : '';
         $metadata = $this->displayMetadata ? "<div>{$content->getMetadata()}</div>" : '';
 
-        $entry->_attributes('thumbnail', null);
-        $entry->_attributes('enclosures', null);
+        if (!$this->displayThumbnails) {
+            $entry->_attributes('thumbnail', null);
+            $entry->_attributes('enclosures', null);
+        }
 
         $entry->_content("{$improved}{$content->getReal()}{$original}{$metadata}");
         $entry->_link($content->getContentLink());

@@ -5,6 +5,7 @@ return [
         'display_image' => 'Display images',
         'display_metadata' => 'Display metadata',
         'display_original' => 'Display original content',
+        'display_thumbnails' => 'Display thumbnails',
         'display_video' => 'Display videos',
         'help' => [
             'imgur_client_id' => 'Check <a href="https://apidocs.imgur.com/#authorization-and-oauth">Imgur API documentation</a> for more information.',

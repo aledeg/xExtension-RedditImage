@@ -12,6 +12,7 @@ class RedditImageExtension extends Minz_Extension {
     private const DEFAULT_DISPLAYVIDEO = true;
     private const DEFAULT_DISPLAYORIGINAL = true;
     private const DEFAULT_DISPLAYMETADATA = false;
+    private const DEFAULT_DISPLAYTHUMBNAILS = false;
 
     private DisplayTransformer $displayTransformer;
     private InsertTransformer $insertTransformer;
@@ -36,7 +37,7 @@ class RedditImageExtension extends Minz_Extension {
             Minz_View::appendStyle($this->getFileUrl($filename, 'css'));
         }
 
-        $this->displayTransformer = new DisplayTransformer($this->getDisplayImage(), $this->getDisplayVideo(), $this->getMutedVideo(), $this->getDisplayOriginal(), $this->getDisplayMetadata());
+        $this->displayTransformer = new DisplayTransformer($this->getDisplayImage(), $this->getDisplayVideo(), $this->getMutedVideo(), $this->getDisplayOriginal(), $this->getDisplayMetadata(), $this->getDisplayThumbnails());
         $this->insertTransformer = new InsertTransformer($this->getImgurClientId());
 
         $this->registerHook('entry_before_display', [$this->displayTransformer, 'transform']);
@@ -56,6 +57,7 @@ class RedditImageExtension extends Minz_Extension {
                 'displayVideo' => (bool) Minz_Request::param('display-video'),
                 'displayOriginal' => (bool) Minz_Request::param('display-original'),
                 'displayMetadata' => (bool) Minz_Request::param('display-metadata'),
+                'displayThumbnails' => (bool) Minz_Request::param('display-thumbnails'),
                 'imgurClientId' => Minz_Request::param('imgur-client-id'),
             ];
             $this->setUserConfiguration($configuration);
@@ -88,6 +90,10 @@ class RedditImageExtension extends Minz_Extension {
 
     public function getDisplayMetadata(): bool {
         return $this->getUserConfigurationValue('displayMetadata', static::DEFAULT_DISPLAYMETADATA);
+    }
+
+    public function getDisplayThumbnails(): bool {
+        return $this->getUserConfigurationValue('displayThumbnails', static::DEFAULT_DISPLAYTHUMBNAILS);
     }
 
     public function getImgurClientId(): string {
