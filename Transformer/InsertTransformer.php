@@ -90,7 +90,7 @@ class InsertTransformer extends AbstractTransformer {
             try {
                 $jsonResponse = file_get_contents("{$content->getCommentsLink()}.json");
                 $arrayResponse = json_decode($jsonResponse, true);
-                $pictures = $arrayResponse[0]['data']['children'][0]['data']['media_metadata'];
+                $pictures = $arrayResponse[0]['data']['children'][0]['data']['media_metadata'] ?? null;
                 if (!empty($pictures)) {
                     $images = [];
                     foreach ($pictures as $id => $metadata) {
