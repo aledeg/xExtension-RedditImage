@@ -140,9 +140,9 @@ class InsertTransformer extends AbstractTransformer {
                     $galleryXpath = new \DomXpath($galleryDom);
                     $images = $galleryXpath->query("//meta[@name='twitter:image']");
                     foreach ($images as $image) {
-                        $links[] = $image->getAttribute('content');
+                        $media[] = $image->getAttribute('content');
                     }
-                    $dom = $this->generateDom('Imgur gallery without API token', $links);
+                    $dom = $this->generateDom('Imgur gallery without API token', $media);
                     $entry->_content("{$dom->saveHTML()}{$content->getRaw()}");
                 }
             } catch (Exception $e) {
