@@ -149,6 +149,7 @@ class DisplayTransformer extends AbstractTransformer {
     private function isAccessible(string $href): bool {
         $channel = curl_init($href);
         curl_setopt($channel, CURLOPT_NOBODY, true);
+        curl_setopt($channel, CURLOPT_FOLLOWLOCATION, true);
         curl_exec($channel);
         $httpCode = curl_getinfo($channel, CURLINFO_HTTP_CODE);
         curl_close($channel);
