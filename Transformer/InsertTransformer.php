@@ -71,7 +71,13 @@ class InsertTransformer extends AbstractTransformer {
             // }
         } elseif (preg_match('#v.redd.it#', $href)) {
             try {
-                $jsonResponse = file_get_contents("{$content->getCommentsLink()}.json");
+                $ch = curl_init("{$content->getCommentsLink()}.json");
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_FAILONERROR, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ["User-Agent: FreshRSS {$FRESHRSS_VERSION}"]);
+                $jsonResponse = $jsonString = curl_exec($ch);
                 $arrayResponse = json_decode($jsonResponse, true);
 
                 if (JSON_ERROR_NONE !== json_last_error()) {
@@ -88,7 +94,13 @@ class InsertTransformer extends AbstractTransformer {
             }
         } elseif (preg_match('#reddit.com/gallery#', $href)) {
             try {
-                $jsonResponse = file_get_contents("{$content->getCommentsLink()}.json");
+                $ch = curl_init("{$content->getCommentsLink()}.json");
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_FAILONERROR, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ["User-Agent: FreshRSS {$FRESHRSS_VERSION}"]);
+                $jsonResponse = $jsonString = curl_exec($ch);
                 $arrayResponse = json_decode($jsonResponse, true);
                 $pictures = $arrayResponse[0]['data']['children'][0]['data']['media_metadata'] ?? null;
                 if (!empty($pictures)) {
