@@ -8,7 +8,7 @@ At the moment, the following resources are recognized:
 
 &nbsp; |match | type | support
 -------|------|------|--------
-1 | links finished by jpg, png, gif, bmp | image | full
+1 | links finished by jpg, jpeg, png, gif, bmp | image | full
 2 | imgur links finished by gifv | video | full
 3 | imgur links finished with a token | image | partial
 4 | links finished by webm, mp4 | video | full
@@ -16,7 +16,7 @@ At the moment, the following resources are recognized:
 6 | redgifs links finished with a token | video | none
 7 | reddit links finished with a token | video | limited (no audio)
 8 | reddit image galleries | image | full
-9 | imgur image galleries | image | full with API client id; partial without
+9 | imgur image galleries | image | full with API client id; none without
 
 **Note** the support from redgifs links with a token went from full to none after a change in their API.
 
@@ -31,6 +31,7 @@ Display images | Choose if images are displayed | **True**
 Display videos | Choose if videos are displayed | **True**
 Display original content | Choose if original contents are displayed | **True**
 Display metadata | Choose if original content metadata are displayed | **False**
+Display thumbnails | Choose if feed enclosure are displayed | **False**
 
 **Note:**
 When the *display original content* option is set to *true*, text content will be displayed twice. Once from the extracted content and once from the original content. To have a nicer interface, it is recommended to set that option to *false*.

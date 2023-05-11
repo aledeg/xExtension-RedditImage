@@ -11,10 +11,6 @@ class Image implements DomElementInterface {
         $this->url = $url;
     }
 
-    public function getUrl(): string {
-        return $this->url;
-    }
-
     public function toDomElement(\DomDocument $domDocument): \DomElement {
         $image = $domDocument->createElement('img');
         $image->setAttribute('src', $this->url);

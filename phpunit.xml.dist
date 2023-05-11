@@ -8,10 +8,19 @@
          beStrictAboutCoverageMetadata="true"
          beStrictAboutOutputDuringTests="true"
          failOnRisky="true"
-         failOnWarning="true">
+         failOnWarning="true"
+         displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnSkippedTests="true">
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
+            <exclude>tests/Client/ClientTest.php</exclude>
+        </testsuite>
+        <testsuite name="canary">
+            <file>tests/Client/ClientTest.php</file>
         </testsuite>
     </testsuites>
     <coverage>
@@ -19,4 +28,7 @@
             <directory suffix=".php">.</directory>
         </include>
     </coverage>
+    <php>
+        <const name="REDDITIMAGE_VERSION" value="test" />
+    </php>
 </phpunit>

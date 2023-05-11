@@ -17,7 +17,6 @@ final class ImageTest extends TestCase {
         $media = new Image('https://example.org');
 
         $this->assertInstanceOf(DomElementInterface::class, $media);
-        $this->assertEquals('https://example.org', $media->getUrl());
 
         $domElement = m::mock(\DomElement::class);
         $domElement->expects('setAttribute')

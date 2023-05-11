@@ -2,20 +2,15 @@
 
 declare(strict_types=1);
 
-use RedditImage\Transformer\DisplayTransformer;
-use RedditImage\Transformer\InsertTransformer;
+use RedditImage\Client\Client;
+use RedditImage\Processor\BeforeInsertProcessor;
+use RedditImage\Processor\BeforeDisplayProcessor;
+use RedditImage\Settings;
 
 class RedditImageExtension extends Minz_Extension {
-    private const DEFAULT_IMAGEHEIGHT = 70;
-    private const DEFAULT_MUTEDVIDEO = true;
-    private const DEFAULT_DISPLAYIMAGE = true;
-    private const DEFAULT_DISPLAYVIDEO = true;
-    private const DEFAULT_DISPLAYORIGINAL = true;
-    private const DEFAULT_DISPLAYMETADATA = false;
-    private const DEFAULT_DISPLAYTHUMBNAILS = false;
-
-    private DisplayTransformer $displayTransformer;
-    private InsertTransformer $insertTransformer;
+    private BeforeDisplayProcessor $beforeDisplayProcessor;
+    private BeforeInsertProcessor $beforeInsertProcessor;
+    public Settings $settings;
 
     public function autoload($class_name): void {
         if (0 === strpos($class_name, 'RedditImage')) {
@@ -24,9 +19,14 @@ class RedditImageExtension extends Minz_Extension {
         }
     }
 
+    private function getUserAgent(): string {
+        return "{$this->getName()}/{$this->getVersion()} by {$this->getAuthor()}";
+    }
+
     public function init(): void {
         spl_autoload_register([$this, 'autoload']);
 
+        define('REDDITIMAGE_VERSION', $this->getVersion());
         $this->registerTranslates();
 
         $current_user = Minz_Session::param('currentUser');
@@ -37,11 +37,13 @@ class RedditImageExtension extends Minz_Extension {
             Minz_View::appendStyle($this->getFileUrl($filename, 'css'));
         }
 
-        $this->displayTransformer = new DisplayTransformer($this->getDisplayImage(), $this->getDisplayVideo(), $this->getMutedVideo(), $this->getDisplayOriginal(), $this->getDisplayMetadata(), $this->getDisplayThumbnails());
-        $this->insertTransformer = new InsertTransformer($this->getImgurClientId());
+        $this->settings = new Settings($this->getUserConfiguration());
 
-        $this->registerHook('entry_before_display', [$this->displayTransformer, 'transform']);
-        $this->registerHook('entry_before_insert', [$this->insertTransformer, 'transform']);
+        $this->beforeDisplayProcessor = new BeforeDisplayProcessor($this->settings);
+        $this->beforeInsertProcessor = new BeforeInsertProcessor($this->settings, new Client($this->getUserAgent()));
+
+        $this->registerHook('entry_before_display', [$this->beforeDisplayProcessor, 'process']);
+        $this->registerHook('entry_before_insert', [$this->beforeInsertProcessor, 'process']);
     }
 
     public function handleConfigureAction(): void {
@@ -51,7 +53,7 @@ class RedditImageExtension extends Minz_Extension {
 
         if (Minz_Request::isPost()) {
             $configuration = [
-                'imageHeight' => (int) Minz_Request::param('image-height', static::DEFAULT_IMAGEHEIGHT),
+                'imageHeight' => (int) Minz_Request::param('image-height', $this->settings->getDefaultImageHeight()),
                 'mutedVideo' => (bool) Minz_Request::param('muted-video'),
                 'displayImage' => (bool) Minz_Request::param('display-image'),
                 'displayVideo' => (bool) Minz_Request::param('display-video'),
@@ -66,37 +68,5 @@ class RedditImageExtension extends Minz_Extension {
                 "img.reddit-image, video.reddit-image {max-height:{$configuration['imageHeight']}vh;}",
             );
         }
-    }
-
-    public function getImageHeight(): int {
-        return $this->getUserConfigurationValue('imageHeight', static::DEFAULT_IMAGEHEIGHT);
-    }
-
-    public function getMutedVideo(): bool {
-        return $this->getUserConfigurationValue('mutedVideo', static::DEFAULT_MUTEDVIDEO);
-    }
-
-    public function getDisplayImage(): bool {
-        return $this->getUserConfigurationValue('displayImage', static::DEFAULT_DISPLAYIMAGE);
-    }
-
-    public function getDisplayVideo(): bool {
-        return $this->getUserConfigurationValue('displayVideo', static::DEFAULT_DISPLAYVIDEO);
-    }
-
-    public function getDisplayOriginal(): bool {
-        return $this->getUserConfigurationValue('displayOriginal', static::DEFAULT_DISPLAYORIGINAL);
-    }
-
-    public function getDisplayMetadata(): bool {
-        return $this->getUserConfigurationValue('displayMetadata', static::DEFAULT_DISPLAYMETADATA);
-    }
-
-    public function getDisplayThumbnails(): bool {
-        return $this->getUserConfigurationValue('displayThumbnails', static::DEFAULT_DISPLAYTHUMBNAILS);
-    }
-
-    public function getImgurClientId(): string {
-        return $this->getUserConfigurationValue('imgurClientId', '');
     }
 }

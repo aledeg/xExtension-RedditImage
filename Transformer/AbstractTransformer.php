@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 namespace RedditImage\Transformer;
 
+use RedditImage\Client\Client;
 use RedditImage\Media\DomElementInterface;
 use RedditImage\Media\Image;
 use RedditImage\Media\Video;
+use RedditImage\Settings;
 
 abstract class AbstractTransformer {
     protected const MATCH_REDDIT = 'reddit.com';
+
+    protected Client $client;
+    protected Settings $settings;
+
+    public function __construct(Settings $settings) {
+        $this->settings = $settings;
+    }
 
     /**
      * @param FreshRSS_Entry $entry
@@ -18,24 +27,26 @@ abstract class AbstractTransformer {
         return (bool) strpos($entry->link(), static::MATCH_REDDIT);
     }
 
-    /**
-     * @return FreshRSS_Entry
-     */
-    abstract public function transform($entry);
-
-    protected function getOriginComment(string $origin): string {
-        $className = (new \ReflectionClass($this))->getShortName();
-
-        return "xExtension-RedditImage | $className | $origin";
+    public function setClient(Client $client): void {
+        $this->client = $client;
     }
 
-    protected function generateDom(string $origin, array $media = []): \DomDocument {
+    protected function getOriginComment(): string {
+        return sprintf(
+            'xExtension-RedditImage/%s | %s | %s',
+            REDDITIMAGE_VERSION,
+            $this->settings->getProcessor(),
+            get_class($this)
+        );
+    }
+
+    protected function generateDom(array $media = []): \DomDocument {
         $dom = new \DomDocument('1.0', 'UTF-8');
 
         $div = $dom->appendChild($dom->createElement('div'));
         $div->setAttribute('class', 'reddit-image figure');
 
-        $div->appendChild($dom->createComment($this->getOriginComment($origin)));
+        $div->appendChild($dom->createComment($this->getOriginComment()));
 
         foreach ($media as $medium) {
             if ($medium instanceof DomElementInterface) {
