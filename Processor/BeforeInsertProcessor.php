@@ -10,6 +10,7 @@ use RedditImage\Client\Client;
 use RedditImage\Content;
 use RedditImage\Settings;
 use RedditImage\Transformer\Agnostic\ImageTransformer as AgnosticImageTransformer;
+use RedditImage\Transformer\Flickr\ImageTransformer as FlickrImageTransformer;
 use RedditImage\Transformer\Gfycat\VideoTransformer as GfycatVideoTransformer;
 use RedditImage\Transformer\Imgur\GalleryWithClientIdTransformer as ImgurGalleryWithClientIdTransformer;
 use RedditImage\Transformer\Imgur\ImageTransformer as ImgurImageTransformer;
@@ -28,6 +29,7 @@ class BeforeInsertProcessor extends AbstractProcessor {
         $this->transformers[] = new GfycatVideoTransformer($this->settings);
         $this->transformers[] = new RedditVideoTransformer($this->settings);
         $this->transformers[] = new RedditGalleryTransformer($this->settings);
+        $this->transformers[] = new FlickrImageTransformer($this->settings);
 
         foreach ($this->transformers as $transformer) {
             $transformer->setClient($client);

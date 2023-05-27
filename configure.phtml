@@ -72,6 +72,13 @@
 
 	<legend><?= _t('ext.reddit_image.section.authorizations') ?></legend>
 	<div class="form-group">
+		<label class="group-name" for="flickr-api-key"><?= _t('ext.reddit_image.flickr_api_key'); ?></label>
+		<div class="group-controls">
+			<input type="text" name="flickr-api-key" id="flickr-api-key" value="<?= $this->settings->getFlickrApiKey() ?>"/>
+			<p class="help"><?= _i('help') ?> <?= _t('ext.reddit_image.help.flickr_api_key') ?></p>
+		</div>
+	</div>
+	<div class="form-group">
 		<label class="group-name" for="imgur-client-id"><?= _t('ext.reddit_image.imgur_client_id'); ?></label>
 		<div class="group-controls">
 			<input type="text" name="imgur-client-id" id="imgur-client-id" value="<?= $this->settings->getImgurClientId() ?>"/>

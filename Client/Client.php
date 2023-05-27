@@ -13,7 +13,7 @@ class Client {
         $this->userAgent = $userAgent;
     }
 
-    public function jsonGet(string $url, array $headers = []): array {
+    public function jsonGet(string $url, array $headers = [], callable $payloadModifier = null): array {
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,
@@ -25,6 +25,9 @@ class Client {
             CURLOPT_HTTPHEADER => $headers,
         ]);
         $jsonString = curl_exec($ch);
+        if ($payloadModifier !== null) {
+            $jsonString = $payloadModifier($jsonString);
+        }
         if (curl_errno($ch)) {
             curl_close($ch);
             throw new ClientException(curl_error($ch));

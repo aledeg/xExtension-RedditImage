@@ -7,7 +7,9 @@ return [
         'display_original' => 'Afficher le contenu initial',
         'display_thumbnails' => 'Afficher les vignettes',
         'display_video' => 'Afficher les vidéos',
+        'flickr_api_key' => 'Clé d’accès à l’API de Flickr',
         'help' => [
+            'flickr_api_key' => 'Lire la <a href="https://www.flickr.com/services/api/">documentation de l’API Flickr</a> pour plus d’information.',
             'imgur_client_id' => 'Lire la <a href="https://apidocs.imgur.com/#authorization-and-oauth">documentation de l’API Imgur</a> pour plus d’information.',
         ],
         'image_height' => 'Hauteur des médias',

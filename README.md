@@ -17,6 +17,7 @@ At the moment, the following resources are recognized:
 7 | reddit links finished with a token | video | limited (no audio)
 8 | reddit image galleries | image | full
 9 | imgur image galleries | image | full with API client id; none without
+10 | flickr image | image | full with API key; none without
 
 **Note** the support from redgifs links with a token went from full to none after a change in their API.
 
@@ -40,12 +41,12 @@ When the *display original content* option is set to *true*, text content will b
 
 Item | Detail | Default
 -----|--------|--------
-Imgur client id | Imgur API client id | _none_
+Flickr API key | Check [Flickr API documentation](https://www.flickr.com/services/api/) for more information | _none_
+Imgur client id | Check [Imgur API documentation](https://apidocs.imgur.com/#authorization-and-oauth) for more information | _none_
 
 ## Known limitations
 - not compatible with PHP versions under 7.2
 - loaded content can not be reprocessed
-- code is still hackish
 - videos extracted from v.redd.it do not have audio. The audio is added by the current extension but is not linked to the video (and will never be). You can still enjoy the audio by linking it yourself with the help of the CustomJS extension. Here is a quick snippet to sync the sound with the video (tested only in Firefox console):
 ```js
 document.querySelectorAll('video.reddit-image').forEach(element => {

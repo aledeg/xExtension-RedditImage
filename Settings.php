@@ -28,6 +28,14 @@ class Settings {
         return $this->settings['imgurClientId'] ?? '';
     }
 
+    public function hasFlickrApiKey(): bool {
+        return $this->getFlickrApiKey() !== '';
+    }
+
+    public function getFlickrApiKey(): string {
+        return $this->settings['flickrApiKey'] ?? '';
+    }
+
     public function getDefaultImageHeight(): int {
         return static::DEFAULT_IMAGEHEIGHT;
     }

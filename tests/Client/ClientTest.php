@@ -32,6 +32,28 @@ class ClientTest extends TestCase {
         $this->assertEquals($isAccessible, $this->client->isAccessible($url));
     }
 
+    public function testJsonGetFlickrImage(): void {
+        if (!defined('FLICKR_API_KEY')) {
+            $this->markTestSkipped('Flickr api key is not defined in the configuration file');
+        }
+
+        $apiKey = FLICKR_API_KEY;
+        $json = $this->client->jsonGet(
+            "https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key={$apiKey}&photo_id=51962178667&format=json",
+            [],
+            static function (string $payload) {
+                return preg_replace(['/^jsonFlickrApi\(/', '/\)$/'], '', $payload);
+            }
+        );
+        $this->assertIsArray($json);
+
+        $metadata = $json['sizes']['size'] ?? [];
+        $this->assertCount(15, $metadata);
+
+        $largestImage = array_pop($metadata);
+        $this->assertEquals('https://live.staticflickr.com/65535/51962178667_fc163483f7_o.jpg', $largestImage['source']);
+    }
+
     public function testJsonGetGfycatVideo(): void {
         $json = $this->client->jsonGet('https://api.gfycat.com/v1/gfycats/sandytatteredakitainu');
         $this->assertIsArray($json);

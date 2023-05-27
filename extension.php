@@ -61,6 +61,7 @@ class RedditImageExtension extends Minz_Extension {
                 'displayMetadata' => (bool) Minz_Request::param('display-metadata'),
                 'displayThumbnails' => (bool) Minz_Request::param('display-thumbnails'),
                 'imgurClientId' => Minz_Request::param('imgur-client-id'),
+                'flickrApiKey' => Minz_Request::param('flickr-api-key'),
             ];
             $this->setUserConfiguration($configuration);
             file_put_contents(
