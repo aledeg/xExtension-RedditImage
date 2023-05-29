@@ -7,6 +7,7 @@ namespace RedditImage\Processor;
 use \Throwable;
 use Minz_Log;
 use RedditImage\Content;
+use RedditImage\Exception\InvalidContentException;
 use RedditImage\Settings;
 use RedditImage\Transformer\Agnostic\ImageTransformer as AgnosticImageTransformer;
 use RedditImage\Transformer\Agnostic\LinkTransformer as AgnosticLinkTransformer;
@@ -38,7 +39,13 @@ class BeforeDisplayProcessor extends AbstractProcessor {
             return $entry;
         }
 
-        $content = new Content($entry->content());
+        try {
+            $content = new Content($entry->content());
+        } catch (InvalidContentException $exception) {
+            Minz_Log::error($exception->__toString());
+            return $entry;
+        }
+
         $improved = $this->getImprovedContent($content);
         $original = $this->getOriginalContent($content);
         $metadata = $this->getMetadataContent($content);

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace RedditImage;
 
+use RedditImage\Exception\InvalidContentException;
+
 class Content {
     private string $content;
-    private \DomDocument $dom;
     private string $preprocessed = '';
     private string $metadata = '';
-    private ?string $contentLink;
-    private ?string $commentsLink;
+    private ?string $contentLink = null;
+    private ?string $commentsLink = null;
     private string $raw;
     private string $real = '';
 
@@ -18,16 +19,27 @@ class Content {
         $this->content = $content;
         $this->raw = $content;
 
-        $this->dom = new \DomDocument('1.0', 'UTF-8');
-        $this->dom->loadHTML(
-            htmlspecialchars_decode(htmlentities(html_entity_decode($content))),
-            LIBXML_NOERROR
-        );
-
-        $this->splitContent();
+        $this->splitContent($content);
         $this->extractMetadata();
         $this->extractLinks();
         $this->extractReal();
+
+        if (!$this->isValid()) {
+            throw new InvalidContentException($content);
+        }
+    }
+
+    private function isValid(): bool {
+        if ($this->metadata === '') {
+            return false;
+        }
+        if ($this->contentLink === null) {
+            return false;
+        }
+        if ($this->commentsLink === null) {
+            return false;
+        }
+        return true;
     }
 
     public function getContentLink(): ?string {
@@ -69,14 +81,20 @@ class Content {
      * fetch quickly. For instance when API calls are involved. Thus we need to
      * separate the feed raw content from the preprocessed content.
      */
-    private function splitContent(): void {
-        $xpath = new \DOMXpath($this->dom);
+    private function splitContent(string $content): void {
+        $dom = new \DomDocument('1.0', 'UTF-8');
+        $dom->loadHTML(
+            htmlspecialchars_decode(htmlentities(html_entity_decode($content))),
+            LIBXML_NOERROR
+        );
+
+        $xpath = new \DOMXpath($dom);
         $redditImage = $xpath->query("//div[contains(@class,'reddit-image')]");
 
         if (1 === $redditImage->length) {
             $node = $redditImage->item(0);
-            $this->preprocessed = $this->dom->saveHTML($node->parentNode->firstChild);
-            $this->raw = $this->dom->saveHTML($node->parentNode->lastChild);
+            $this->preprocessed = $dom->saveHTML($node->parentNode->firstChild);
+            $this->raw = $dom->saveHTML($node->parentNode->lastChild);
         }
     }
 
@@ -89,7 +107,7 @@ class Content {
      * current message comment section.
      */
     private function extractMetadata(): void {
-        if (preg_match('#(?P<metadata>\s{3}submitted.*</span>)#', $this->content, $matches)) {
+        if (preg_match('#(?P<metadata>\s{3}submitted.*</span>)#', $this->raw, $matches)) {
             $this->metadata = $matches['metadata'];
         }
     }
@@ -102,7 +120,13 @@ class Content {
      *   - comments link.
      */
     private function extractLinks(): void {
-        $links = $this->dom->getElementsByTagName('a');
+        $dom = new \DomDocument('1.0', 'UTF-8');
+        $dom->loadHTML(
+            htmlspecialchars_decode(htmlentities(html_entity_decode($this->raw))),
+            LIBXML_NOERROR
+        );
+
+        $links = $dom->getElementsByTagName('a');
         foreach ($links as $link) {
             switch ($link->textContent) {
                 case '[link]':
@@ -124,11 +148,17 @@ class Content {
      * processed by SimplePie.
      */
     private function extractReal(): void {
-        $xpath = new \DOMXpath($this->dom);
+        $dom = new \DomDocument('1.0', 'UTF-8');
+        $dom->loadHTML(
+            htmlspecialchars_decode(htmlentities(html_entity_decode($this->raw))),
+            LIBXML_NOERROR
+        );
+
+        $xpath = new \DOMXpath($dom);
         $mdNode = $xpath->query("//div[contains(@data-sanitized-class,'md')]");
         if (1 === $mdNode->length) {
             $node = $mdNode->item(0);
-            $this->real = $this->dom->saveHTML($node);
+            $this->real = $dom->saveHTML($node);
         }
     }
 }

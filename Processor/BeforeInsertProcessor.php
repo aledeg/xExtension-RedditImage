@@ -8,6 +8,7 @@ use \Throwable;
 use Minz_Log;
 use RedditImage\Client\Client;
 use RedditImage\Content;
+use RedditImage\Exception\InvalidContentException;
 use RedditImage\Settings;
 use RedditImage\Transformer\Agnostic\ImageTransformer as AgnosticImageTransformer;
 use RedditImage\Transformer\Flickr\ImageTransformer as FlickrImageTransformer;
@@ -46,7 +47,12 @@ class BeforeInsertProcessor extends AbstractProcessor {
         }
 
         $newContent = '';
-        $content = new Content($entry->content());
+        try {
+            $content = new Content($entry->content());
+        } catch (InvalidContentException $exception) {
+            Minz_Log::error($exception->__toString());
+            return $entry;
+        }
 
         foreach ($this->transformers as $transformer) {
             if (!$transformer->canTransform($content)) {
@@ -55,14 +61,13 @@ class BeforeInsertProcessor extends AbstractProcessor {
 
             try {
                 $newContent = $transformer->transform($content);
+                if ($newContent !== '') {
+                    $entry->_content("{$newContent}{$content->getRaw()}");
+                }
                 break;
             } catch (Throwable $e) {
                 Minz_Log::error("{$e->__toString()} - {$content->getContentLink()}");
             }
-        }
-
-        if ($newContent !== '') {
-            $entry->_content("{$newContent}{$content->getRaw()}");
         }
 
         return $entry;
