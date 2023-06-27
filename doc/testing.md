@@ -7,7 +7,7 @@ You need to retrieve the test framework and generate the classmap before running
 
 This is done by running the following command:
 ```
-docker-compose composer install
+docker-compose run composer install
 ```
 
 ## Running the test suites
@@ -33,5 +33,5 @@ docker-compose run phpunit --testsuite canary
 If the test suites complain about missing classes, it's probably a symptom of an outdated classmap.
 To resolve that issue, run the following command:
 ```
-docker-compose composer dump-autoload
+docker-compose run composer dump-autoload
 ```
