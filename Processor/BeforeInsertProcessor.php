@@ -38,8 +38,8 @@ class BeforeInsertProcessor extends AbstractProcessor {
     }
 
     /**
-     * @param FreshRSS_Entry $entry
-     * @return FreshRSS_Entry
+     * @param \FreshRSS_Entry $entry
+     * @return \FreshRSS_Entry
      */
     public function process($entry) {
         if (false === $this->isRedditLink($entry)) {

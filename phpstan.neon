@@ -1,0 +1,12 @@
+parameters:
+    level: 7
+    bootstrapFiles:
+        - tests/phpstan/constants.php
+    paths:
+        - .
+    excludePaths:
+        analyse:
+            - var
+            - vendor
+    ignoreErrors:
+        - "#^Parameter \\#2 \\$hook_function of method Minz_Extension\\:\\:registerHook\\(\\) expects array\\<string\\>\\|callable\\-string, array\\{RedditImage\\\\Processor\\\\.+, 'process'\\} given\\.$#"

@@ -13,6 +13,9 @@ class htmlHasLink extends Constraint {
         $this->link = $link;
     }
 
+    /**
+     * @param mixed $other
+     */
     public function matches($other): bool {
         if (!is_string($other)) {
             return false;
@@ -26,7 +29,7 @@ class htmlHasLink extends Constraint {
         $xpath = new \DOMXpath($dom);
         $links = $xpath->query("body/div/p/a[@href='{$this->link}']");
 
-        if ($links->length !== 1) {
+        if ($links === false || $links->length !== 1) {
             return false;
         }
 
@@ -34,6 +37,6 @@ class htmlHasLink extends Constraint {
     }
 
     public function toString(): string {
-        return "has the link {$this->imageUrl}";
+        return "has the link {$this->link}";
     }
 }

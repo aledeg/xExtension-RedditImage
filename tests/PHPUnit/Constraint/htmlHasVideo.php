@@ -15,6 +15,9 @@ class htmlHasVideo extends Constraint {
         $this->videoUrl = $videoUrl;
     }
 
+    /**
+     * @param mixed $other
+     */
     public function matches($other): bool {
         if (!is_string($other)) {
             return false;
@@ -28,7 +31,7 @@ class htmlHasVideo extends Constraint {
         $xpath = new \DOMXpath($dom);
         $videos = $xpath->query("body/div/video[@class='reddit-image'][@controls='true'][@preload='metadata']/source[@src='{$this->videoUrl}'][@type='video/{$this->format}']");
 
-        if ($videos->length !== 1) {
+        if ($videos === false || $videos->length !== 1) {
             return false;
         }
 

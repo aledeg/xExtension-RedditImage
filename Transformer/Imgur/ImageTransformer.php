@@ -17,6 +17,6 @@ class ImageTransformer extends AbstractTransformer implements TransformerInterfa
     public function transform(Content $content): string {
         $dom = $this->generateDom([new Image("{$content->getContentLink()}.png")]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 }

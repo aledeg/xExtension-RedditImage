@@ -17,6 +17,6 @@ class LinkTransformer extends AbstractTransformer implements TransformerInterfac
     public function transform(Content $content): string {
         $dom = $this->generateDom([new Link($content->getContentLink())]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 }

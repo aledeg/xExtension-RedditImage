@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RedditImage\Media;
 
 class Video implements DomElementInterface {
+    /** @var array<string, string> */
     private array $sources = [];
     private ?string $audioTrack;
 
@@ -30,16 +31,19 @@ class Video implements DomElementInterface {
         $video->setAttribute('class', 'reddit-image');
 
         if ($this->hasAudioTrack()) {
-            $audio = $video->appendChild($domDocument->createElement('audio'));
+            $audio = $domDocument->createElement('audio');
             $audio->setAttribute('controls', 'true');
-            $source = $audio->appendChild($domDocument->createElement('source'));
+            $video->appendChild($audio);
+            $source = $domDocument->createElement('source');
             $source->setAttribute('src', $this->audioTrack);
+            $audio->appendChild($source);
         }
 
         foreach ($this->sources as $format => $url) {
-            $source = $video->appendChild($domDocument->createElement('source'));
+            $source = $domDocument->createElement('source');
             $source->setAttribute('src', $url);
             $source->setAttribute('type', $format);
+            $video->appendChild($source);
         }
 
         return $video;

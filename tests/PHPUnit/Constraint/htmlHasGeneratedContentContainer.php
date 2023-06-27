@@ -7,6 +7,9 @@ namespace RedditImage\Tests\PHPUnit\Constraint;
 use PHPUnit\Framework\Constraint\Constraint;
 
 class htmlHasGeneratedContentContainer extends Constraint {
+    /**
+     * @param mixed $other
+     */
     public function matches($other): bool {
         if (!is_string($other)) {
             return false;
@@ -19,7 +22,7 @@ class htmlHasGeneratedContentContainer extends Constraint {
 
         $xpath = new \DOMXpath($dom);
         $container = $xpath->query("body/div[@class='reddit-image figure']");
-        if ($container->length !== 1) {
+        if ($container === false || $container->length !== 1) {
             return false;
         }
 

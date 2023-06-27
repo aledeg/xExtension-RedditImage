@@ -20,6 +20,6 @@ class VideoTransformer extends AbstractTransformer implements TransformerInterfa
         preg_match(self::MATCHING_REGEX, $content->getContentLink(), $matches);
         $dom = $this->generateDom([new Video('video/mp4', "{$matches['gifv']}mp4")]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 }

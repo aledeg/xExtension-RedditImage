@@ -20,6 +20,6 @@ class ImageTransformer extends AbstractTransformer implements TransformerInterfa
         preg_match(self::MATCHING_REGEX, $content->getContentLink(), $matches);
         $dom = $this->generateDom([new Image($matches['link'])]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 }

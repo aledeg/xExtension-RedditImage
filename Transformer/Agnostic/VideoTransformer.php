@@ -27,6 +27,6 @@ class VideoTransformer extends AbstractTransformer implements TransformerInterfa
         $extension = $matches['extension'];
         $dom = $this->generateDom([new Video("video/{$extension}", $url)]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 }

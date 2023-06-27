@@ -7,7 +7,6 @@ namespace RedditImage;
 use RedditImage\Exception\InvalidContentException;
 
 class Content {
-    private string $content;
     private string $preprocessed = '';
     private string $metadata = '';
     private ?string $contentLink = null;
@@ -16,7 +15,6 @@ class Content {
     private string $real = '';
 
     public function __construct(string $content) {
-        $this->content = $content;
         $this->raw = $content;
 
         $this->splitContent($content);
@@ -91,10 +89,10 @@ class Content {
         $xpath = new \DOMXpath($dom);
         $redditImage = $xpath->query("//div[contains(@class,'reddit-image')]");
 
-        if (1 === $redditImage->length) {
+        if ($redditImage !== false && $redditImage->length === 1) {
             $node = $redditImage->item(0);
-            $this->preprocessed = $dom->saveHTML($node->parentNode->firstChild);
-            $this->raw = $dom->saveHTML($node->parentNode->lastChild);
+            $this->preprocessed = $dom->saveHTML($node->parentNode->firstChild) ?: '';
+            $this->raw = $dom->saveHTML($node->parentNode->lastChild) ?: '';
         }
     }
 
@@ -156,9 +154,9 @@ class Content {
 
         $xpath = new \DOMXpath($dom);
         $mdNode = $xpath->query("//div[contains(@data-sanitized-class,'md')]");
-        if (1 === $mdNode->length) {
+        if ($mdNode !== false && $mdNode->length === 1) {
             $node = $mdNode->item(0);
-            $this->real = $dom->saveHTML($node);
+            $this->real = $dom->saveHTML($node) ?: '';
         }
     }
 }

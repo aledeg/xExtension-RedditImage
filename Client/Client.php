@@ -13,6 +13,12 @@ class Client {
         $this->userAgent = $userAgent;
     }
 
+    /**
+     * @param string $url
+     * @param string[] $headers
+     * @param callable $payloadModifier
+     * @return array<mixed, mixed>
+     */
     public function jsonGet(string $url, array $headers = [], callable $payloadModifier = null): array {
         $ch = curl_init();
         curl_setopt_array($ch, [
@@ -37,6 +43,11 @@ class Client {
         return json_decode($jsonString, true, 512, JSON_THROW_ON_ERROR);
     }
 
+    /**
+     * @param string $url
+     * @param string[] $headers
+     * @return bool
+     */
     public function isAccessible(string $url, array $headers = []): bool {
         $ch = curl_init();
         curl_setopt_array($ch, [

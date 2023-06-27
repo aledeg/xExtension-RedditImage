@@ -31,8 +31,8 @@ class BeforeDisplayProcessor extends AbstractProcessor {
     }
 
     /**
-     * @param FreshRSS_Entry $entry
-     * @return FreshRSS_Entry
+     * @param \FreshRSS_Entry $entry
+     * @return \FreshRSS_Entry
      */
     public function process($entry) {
         if (false === $this->isRedditLink($entry)) {
@@ -99,7 +99,7 @@ class BeforeDisplayProcessor extends AbstractProcessor {
             }
         }
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 
     private function processContent(Content $content): string {

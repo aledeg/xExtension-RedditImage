@@ -74,6 +74,7 @@ final class ImageTransformerTest extends TestCase {
 
     /**
      * @dataProvider provideDataWithoutImageLinkForTransform
+     * @param mixed[] $response
      */
     public function testTransformWhenNoImageLink(array $response): void {
         $client = m::mock(Client::class);

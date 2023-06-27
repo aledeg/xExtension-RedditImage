@@ -21,7 +21,7 @@ class VideoTransformer extends AbstractTransformer implements TransformerInterfa
 
         $dom = $this->generateDom([new Video('video/mp4', $videoUrl, $this->getAudioUrl($videoUrl))]);
         
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 
     private function getVideoUrl(Content $content): string {

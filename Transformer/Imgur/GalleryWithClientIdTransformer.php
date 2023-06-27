@@ -32,12 +32,15 @@ class GalleryWithClientIdTransformer extends AbstractTransformer implements Tran
         if ($gallery !== []) {
             $dom = $this->generateDom($gallery);
             
-            return $dom->saveHTML();
+            return $dom->saveHTML() ?: '';
         }
 
         return '';
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     private function getMediaMetadata(Content $content): array {
         preg_match(self::MATCHING_REGEX, $content->getContentLink(), $matches);
         $arrayResponse = $this->client->jsonGet("https://api.imgur.com/3/album/{$matches['imageHash']}/images", [

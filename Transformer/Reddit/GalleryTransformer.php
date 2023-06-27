@@ -26,12 +26,15 @@ class GalleryTransformer extends AbstractTransformer implements TransformerInter
         if ($images !== []) {
             $dom = $this->generateDom($images);
             
-            return $dom->saveHTML();
+            return $dom->saveHTML() ?: '';
         }
 
         return '';
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     private function getMediaMetadata(Content $content): array {
         $arrayResponse = $this->client->jsonGet("{$content->getCommentsLink()}.json");
 

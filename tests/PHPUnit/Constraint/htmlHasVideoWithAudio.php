@@ -17,6 +17,9 @@ class htmlHasVideoWithAudio extends Constraint {
         $this->audioUrl = $audioUrl;
     }
 
+    /**
+     * @param mixed $other
+     */
     public function matches($other): bool {
         if (!is_string($other)) {
             return false;
@@ -30,13 +33,13 @@ class htmlHasVideoWithAudio extends Constraint {
         $xpath = new \DOMXpath($dom);
         $videos = $xpath->query("body/div/video[@class='reddit-image'][@controls='true'][@preload='metadata']/source[@src='{$this->videoUrl}'][@type='video/{$this->format}']");
 
-        if ($videos->length !== 1) {
+        if ($videos === false || $videos->length !== 1) {
             return false;
         }
 
         $audios = $xpath->query("body/div/video/audio[@controls='true']/source[@src='{$this->audioUrl}']");
 
-        if ($audios->length !== 1) {
+        if ($audios === false || $audios->length !== 1) {
             return false;
         }
 

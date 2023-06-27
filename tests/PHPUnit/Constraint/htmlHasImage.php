@@ -13,6 +13,9 @@ class htmlHasImage extends Constraint {
         $this->imageUrl = $imageUrl;
     }
 
+    /**
+     * @param mixed $other
+     */
     public function matches($other): bool {
         if (!is_string($other)) {
             return false;
@@ -26,7 +29,7 @@ class htmlHasImage extends Constraint {
         $xpath = new \DOMXpath($dom);
         $images = $xpath->query("body/div/img[@class='reddit-image'][@src='{$this->imageUrl}']");
 
-        if ($images->length !== 1) {
+        if ($images === false || $images->length !== 1) {
             return false;
         }
 

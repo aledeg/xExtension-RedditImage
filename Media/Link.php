@@ -13,9 +13,10 @@ class Link implements DomElementInterface {
 
     public function toDomElement(\DomDocument $domDocument): \DomElement {
         $p = $domDocument->createElement('p');
-        $a = $p->appendChild($domDocument->createElement('a'));
+        $a = $domDocument->createElement('a');
         $a->setAttribute('href', $this->url);
         $a->appendChild($domDocument->createTextNode($this->url));
+        $p->appendChild($a);
 
         return $p;
     }

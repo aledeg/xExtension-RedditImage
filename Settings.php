@@ -14,8 +14,12 @@ class Settings {
     private const DEFAULT_DISPLAYTHUMBNAILS = false;
 
     private string $processor = 'no';
+    /** @var array<string, string|int|bool> */
     private array $settings;
 
+    /**
+     * @param array<string, string|int|bool> $settings
+     */
     public function __construct(array $settings) {
         $this->settings = $settings;
     }
@@ -25,7 +29,11 @@ class Settings {
     }
 
     public function getImgurClientId(): string {
-        return $this->settings['imgurClientId'] ?? '';
+        if (array_key_exists('imgurClientId', $this->settings)) {
+            return (string) $this->settings['imgurClientId'];
+        }
+
+        return '';
     }
 
     public function hasFlickrApiKey(): bool {
@@ -33,39 +41,71 @@ class Settings {
     }
 
     public function getFlickrApiKey(): string {
-        return $this->settings['flickrApiKey'] ?? '';
+        if (array_key_exists('flickrApiKey', $this->settings)) {
+            return (string) $this->settings['flickrApiKey'];
+        }
+
+        return '';
     }
 
     public function getDefaultImageHeight(): int {
-        return static::DEFAULT_IMAGEHEIGHT;
+        return self::DEFAULT_IMAGEHEIGHT;
     }
 
     public function getImageHeight(): int {
-        return $this->settings['imageHeight'] ?? static::DEFAULT_IMAGEHEIGHT;
+        if (array_key_exists('imageHeight', $this->settings)) {
+            return (int) $this->settings['imageHeight'];
+        }
+
+        return self::DEFAULT_IMAGEHEIGHT;
     }
 
     public function getMutedVideo(): bool {
-        return $this->settings['mutedVideo'] ?? static::DEFAULT_MUTEDVIDEO;
+        if (array_key_exists('mutedVideo', $this->settings)) {
+            return (bool) $this->settings['mutedVideo'];
+        }
+
+        return self::DEFAULT_MUTEDVIDEO;
     }
 
     public function getDisplayImage(): bool {
-        return $this->settings['displayImage'] ?? static::DEFAULT_DISPLAYIMAGE;
+        if (array_key_exists('displayImage', $this->settings)) {
+            return (bool) $this->settings['displayImage'];
+        }
+
+        return self::DEFAULT_DISPLAYIMAGE;
     }
 
     public function getDisplayVideo(): bool {
-        return $this->settings['displayVideo'] ?? static::DEFAULT_DISPLAYVIDEO;
+        if (array_key_exists('displayVideo', $this->settings)) {
+            return (bool) $this->settings['displayVideo'];
+        }
+
+        return self::DEFAULT_DISPLAYVIDEO;
     }
 
     public function getDisplayOriginal(): bool {
-        return $this->settings['displayOriginal'] ?? static::DEFAULT_DISPLAYORIGINAL;
+        if (array_key_exists('displayOriginal', $this->settings)) {
+            return (bool) $this->settings['displayOriginal'];
+        }
+
+        return self::DEFAULT_DISPLAYORIGINAL;
     }
 
     public function getDisplayMetadata(): bool {
-        return $this->settings['displayMetadata'] ?? static::DEFAULT_DISPLAYMETADATA;
+        if (array_key_exists('displayMetadata', $this->settings)) {
+            return (bool) $this->settings['displayMetadata'];
+        }
+
+        return self::DEFAULT_DISPLAYMETADATA;
     }
 
     public function getDisplayThumbnails(): bool {
-        return $this->settings['displayThumbnails'] ?? static::DEFAULT_DISPLAYTHUMBNAILS;
+        if (array_key_exists('displayThumbnails', $this->settings)) {
+            return (bool) $this->settings['displayThumbnails'];
+        }
+
+        return self::DEFAULT_DISPLAYTHUMBNAILS;
     }
 
     public function getProcessor(): string {

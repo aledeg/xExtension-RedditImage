@@ -31,9 +31,12 @@ class VideoTransformer extends AbstractTransformer implements TransformerInterfa
 
         $dom = $this->generateDom([$video]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 
+    /**
+     * @return array<int|string, mixed>
+     */
     private function getMediaMetadata(Content $content): array {
         preg_match(self::MATCHING_REGEX, $content->getContentLink(), $matches);
 

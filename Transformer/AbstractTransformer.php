@@ -21,7 +21,7 @@ abstract class AbstractTransformer {
     }
 
     /**
-     * @param FreshRSS_Entry $entry
+     * @param \FreshRSS_Entry $entry
      */
     protected function isRedditLink($entry): bool {
         return (bool) strpos($entry->link(), static::MATCH_REDDIT);
@@ -40,10 +40,13 @@ abstract class AbstractTransformer {
         );
     }
 
+    /**
+     * @param mixed[] $media
+     */
     protected function generateDom(array $media = []): \DomDocument {
         $dom = new \DomDocument('1.0', 'UTF-8');
 
-        $div = $dom->appendChild($dom->createElement('div'));
+        $div = $dom->createElement('div');
         $div->setAttribute('class', 'reddit-image figure');
 
         $div->appendChild($dom->createComment($this->getOriginComment()));
@@ -53,6 +56,7 @@ abstract class AbstractTransformer {
                 $div->appendChild($medium->toDomElement($dom));
             }
         }
+        $dom->appendChild($div);
 
         return $dom;
     }

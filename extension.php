@@ -12,7 +12,7 @@ class RedditImageExtension extends Minz_Extension {
     private BeforeInsertProcessor $beforeInsertProcessor;
     public Settings $settings;
 
-    public function autoload($class_name): void {
+    public function autoload(string $class_name): void {
         if (0 === strpos($class_name, 'RedditImage')) {
             $class_name = substr($class_name, 12);
             include $this->getPath() . DIRECTORY_SEPARATOR . str_replace('\\', '/', $class_name) . '.php';

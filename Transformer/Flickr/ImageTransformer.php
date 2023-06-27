@@ -31,9 +31,12 @@ class ImageTransformer extends AbstractTransformer implements TransformerInterfa
 
         $dom = $this->generateDom([new Image($largestImage)]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 
+    /**
+     * @return array<string, array<string, string>>
+     */
     private function getMediaMetadata(Content $content): array {
         preg_match(self::MATCHING_REGEX, $content->getContentLink(), $matches);
         $arrayResponse = $this->client->jsonGet(
