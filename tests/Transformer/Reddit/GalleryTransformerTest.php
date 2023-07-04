@@ -11,15 +11,17 @@ use RedditImage\Settings;
 use RedditImage\Tests\PHPUnit\TestCase;
 use RedditImage\Transformer\Reddit\GalleryTransformer;
 
- /**
- * @covers GalleryTransformer
- */
-final class GalleryTransformerTest extends TestCase {
+/**
+* @covers GalleryTransformer
+*/
+final class GalleryTransformerTest extends TestCase
+{
     private GalleryTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -30,7 +32,8 @@ final class GalleryTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForCanTransform
      */
-    public function testCanTransform(string $url, bool $expected): void {
+    public function testCanTransform(string $url, bool $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($url);
@@ -38,13 +41,15 @@ final class GalleryTransformerTest extends TestCase {
         $this->assertEquals($expected, $this->transformer->canTransform($this->content));
     }
 
-    public static function provideDataForCanTransform(): \Generator {
+    public static function provideDataForCanTransform(): \Generator
+    {
         yield 'not Reddit URL' => ['https://example.org', false];
         yield 'not Reddit gallery URL' => ['https://reddit.com', false];
         yield 'Reddit gallery URL' => ['https://reddit.com/gallery', true];
     }
 
-    public function testTransformWhenNoContent(): void {
+    public function testTransformWhenNoContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()
@@ -59,7 +64,8 @@ final class GalleryTransformerTest extends TestCase {
         $this->assertEquals('', $this->transformer->transform($this->content));
     }
 
-    public function testTransformWhenContent(): void {
+    public function testTransformWhenContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()
@@ -96,7 +102,8 @@ final class GalleryTransformerTest extends TestCase {
         $this->assertHtmlHasImage($html, 'https://i.redd.it/image2of2.jpg');
     }
 
-    public function testTransformWhenCrosspostedContent(): void {
+    public function testTransformWhenCrosspostedContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()

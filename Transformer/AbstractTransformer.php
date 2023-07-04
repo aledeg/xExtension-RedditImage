@@ -10,28 +10,33 @@ use RedditImage\Media\Image;
 use RedditImage\Media\Video;
 use RedditImage\Settings;
 
-abstract class AbstractTransformer {
+abstract class AbstractTransformer
+{
     protected const MATCH_REDDIT = 'reddit.com';
 
     protected Client $client;
     protected Settings $settings;
 
-    public function __construct(Settings $settings) {
+    public function __construct(Settings $settings)
+    {
         $this->settings = $settings;
     }
 
     /**
      * @param \FreshRSS_Entry $entry
      */
-    protected function isRedditLink($entry): bool {
+    protected function isRedditLink($entry): bool
+    {
         return (bool) strpos($entry->link(), static::MATCH_REDDIT);
     }
 
-    public function setClient(Client $client): void {
+    public function setClient(Client $client): void
+    {
         $this->client = $client;
     }
 
-    protected function getOriginComment(): string {
+    protected function getOriginComment(): string
+    {
         return sprintf(
             'xExtension-RedditImage/%s | %s | %s',
             REDDITIMAGE_VERSION,
@@ -43,7 +48,8 @@ abstract class AbstractTransformer {
     /**
      * @param mixed[] $media
      */
-    protected function generateDom(array $media = []): \DomDocument {
+    protected function generateDom(array $media = []): \DomDocument
+    {
         $dom = new \DomDocument('1.0', 'UTF-8');
 
         $div = $dom->createElement('div');

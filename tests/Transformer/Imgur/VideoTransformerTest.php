@@ -13,12 +13,14 @@ use RedditImage\Transformer\Imgur\VideoTransformer;
 /**
  * @covers VideoTransformer
  */
-final class VideoTransformerTest extends TestCase {
+final class VideoTransformerTest extends TestCase
+{
     private VideoTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -29,7 +31,8 @@ final class VideoTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForCanTransform
      */
-    public function testCanTransform(string $url, bool $expected): void {
+    public function testCanTransform(string $url, bool $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($url);
@@ -37,7 +40,8 @@ final class VideoTransformerTest extends TestCase {
         $this->assertEquals($expected, $this->transformer->canTransform($this->content));
     }
 
-    public static function provideDataForCanTransform(): \Generator {
+    public static function provideDataForCanTransform(): \Generator
+    {
         yield 'not Imgur URL' => ['https://example.org', false];
         yield 'Imgur URL without video' => ['https://imgur.com/image.jpg', false];
         yield 'Imgur URL with video' => ['https://imgur.com/video.gifv', true];
@@ -45,7 +49,8 @@ final class VideoTransformerTest extends TestCase {
         yield 'Imgur URL with video and route parameter' => ['https://imgur.com/videos/video.gifv', false];
     }
 
-    public function testTransform(): void {
+    public function testTransform(): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns('https://imgur.com/video.gifv');

@@ -10,15 +10,17 @@ use RedditImage\Content;
 use RedditImage\Settings;
 use RedditImage\Transformer\Imgur\ImageTransformer;
 
- /**
- * @covers ImageTransformer
- */
-final class ImageTransformerTest extends TestCase {
+/**
+* @covers ImageTransformer
+*/
+final class ImageTransformerTest extends TestCase
+{
     private ImageTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -29,7 +31,8 @@ final class ImageTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForCanTransform
      */
-    public function testCanTransform(string $link, bool $expected): void {
+    public function testCanTransform(string $link, bool $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($link);
@@ -37,7 +40,8 @@ final class ImageTransformerTest extends TestCase {
         $this->assertEquals($expected, $this->transformer->canTransform($this->content));
     }
 
-    public static function provideDataForCanTransform(): \Generator {
+    public static function provideDataForCanTransform(): \Generator
+    {
         yield 'not an Imgur URL' => ['https://example.org/abc123', false];
         yield 'Imgur URL' => ['https://imgur.com/', false];
         yield 'Imgur URL with album token' => ['https://imgur.com/a/abc123', false];
@@ -47,7 +51,8 @@ final class ImageTransformerTest extends TestCase {
         yield 'Imgur URL with extension' => ['https://imgur.com/abc123.png', false];
     }
 
-    public function testTransform(): void {
+    public function testTransform(): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns('https://example.org/abc123');

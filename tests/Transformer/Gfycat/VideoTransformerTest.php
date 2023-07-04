@@ -11,15 +11,17 @@ use RedditImage\Settings;
 use RedditImage\Tests\PHPUnit\TestCase;
 use RedditImage\Transformer\Gfycat\VideoTransformer;
 
- /**
- * @covers VideoTransformer
- */
-final class VideoTransformerTest extends TestCase {
+/**
+* @covers VideoTransformer
+*/
+final class VideoTransformerTest extends TestCase
+{
     private VideoTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -30,7 +32,8 @@ final class VideoTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForCanTransform
      */
-    public function testCanTransform(string $url, bool $expected): void {
+    public function testCanTransform(string $url, bool $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($url);
@@ -38,7 +41,8 @@ final class VideoTransformerTest extends TestCase {
         $this->assertEquals($expected, $this->transformer->canTransform($this->content));
     }
 
-    public static function provideDataForCanTransform(): \Generator {
+    public static function provideDataForCanTransform(): \Generator
+    {
         yield 'not Gfycat URL' => ['https://example.org', false];
         yield 'Gfycat without token' => ['https://gfycat.com/', false];
         yield 'Gfycat with token' => ['https://gfycat.com/abc123', true];
@@ -47,7 +51,8 @@ final class VideoTransformerTest extends TestCase {
         yield 'Gfycat with token and route parameters' => ['https://gfycat.com/abc/def/ghi123', true];
     }
 
-    public function testTransformWhenNoContent(): void {
+    public function testTransformWhenNoContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()
@@ -62,7 +67,8 @@ final class VideoTransformerTest extends TestCase {
         $this->assertEquals('', $this->transformer->transform($this->content));
     }
 
-    public function testTransformWhenContent(): void {
+    public function testTransformWhenContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()

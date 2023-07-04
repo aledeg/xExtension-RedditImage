@@ -11,15 +11,17 @@ use RedditImage\Settings;
 use RedditImage\Tests\PHPUnit\TestCase;
 use RedditImage\Transformer\Reddit\VideoTransformer;
 
- /**
- * @covers VideoTransformer
- */
-final class VideoTransformerTest extends TestCase {
+/**
+* @covers VideoTransformer
+*/
+final class VideoTransformerTest extends TestCase
+{
     private VideoTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -30,7 +32,8 @@ final class VideoTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForCanTransform
      */
-    public function testCanTransform(string $url, bool $expected): void {
+    public function testCanTransform(string $url, bool $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($url);
@@ -38,7 +41,8 @@ final class VideoTransformerTest extends TestCase {
         $this->assertEquals($expected, $this->transformer->canTransform($this->content));
     }
 
-    public static function provideDataForCanTransform(): \Generator {
+    public static function provideDataForCanTransform(): \Generator
+    {
         yield 'not Reddit URL' => ['https://example.org', false];
         yield 'not Redd.it URL' => ['https://reddit.com', false];
         yield 'not Redd.it video URL' => ['https://redd.it', false];
@@ -46,7 +50,8 @@ final class VideoTransformerTest extends TestCase {
         yield 'Redd.it video URL with query string' => ['https://v.redd.it?key=param', true];
     }
 
-    public function testTransformWhenNoContent(): void {
+    public function testTransformWhenNoContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()
@@ -61,7 +66,8 @@ final class VideoTransformerTest extends TestCase {
         $this->assertEquals('', $this->transformer->transform($this->content));
     }
 
-    public function testTransformWhenContent(): void {
+    public function testTransformWhenContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()
@@ -94,7 +100,8 @@ final class VideoTransformerTest extends TestCase {
         $this->assertHtmlHasMp4VideoWithAudio($html, 'https://example.org/DASH_video.mp4', 'https://example.org/DASH_audio.mp4');
     }
 
-    public function testTransformWhenCrosspostedContent(): void {
+    public function testTransformWhenCrosspostedContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()

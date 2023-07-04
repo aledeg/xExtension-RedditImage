@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace RedditImage;
 
-class Settings {
+class Settings
+{
     private const DEFAULT_IMAGEHEIGHT = 70;
     private const DEFAULT_MUTEDVIDEO = true;
     private const DEFAULT_DISPLAYIMAGE = true;
@@ -20,15 +21,18 @@ class Settings {
     /**
      * @param array<string, string|int|bool> $settings
      */
-    public function __construct(array $settings) {
+    public function __construct(array $settings)
+    {
         $this->settings = $settings;
     }
 
-    public function hasImgurClientId(): bool {
+    public function hasImgurClientId(): bool
+    {
         return $this->getImgurClientId() !== '';
     }
 
-    public function getImgurClientId(): string {
+    public function getImgurClientId(): string
+    {
         if (array_key_exists('imgurClientId', $this->settings)) {
             return (string) $this->settings['imgurClientId'];
         }
@@ -36,11 +40,13 @@ class Settings {
         return '';
     }
 
-    public function hasFlickrApiKey(): bool {
+    public function hasFlickrApiKey(): bool
+    {
         return $this->getFlickrApiKey() !== '';
     }
 
-    public function getFlickrApiKey(): string {
+    public function getFlickrApiKey(): string
+    {
         if (array_key_exists('flickrApiKey', $this->settings)) {
             return (string) $this->settings['flickrApiKey'];
         }
@@ -48,11 +54,13 @@ class Settings {
         return '';
     }
 
-    public function getDefaultImageHeight(): int {
+    public function getDefaultImageHeight(): int
+    {
         return self::DEFAULT_IMAGEHEIGHT;
     }
 
-    public function getImageHeight(): int {
+    public function getImageHeight(): int
+    {
         if (array_key_exists('imageHeight', $this->settings)) {
             return (int) $this->settings['imageHeight'];
         }
@@ -60,7 +68,8 @@ class Settings {
         return self::DEFAULT_IMAGEHEIGHT;
     }
 
-    public function getMutedVideo(): bool {
+    public function getMutedVideo(): bool
+    {
         if (array_key_exists('mutedVideo', $this->settings)) {
             return (bool) $this->settings['mutedVideo'];
         }
@@ -68,7 +77,8 @@ class Settings {
         return self::DEFAULT_MUTEDVIDEO;
     }
 
-    public function getDisplayImage(): bool {
+    public function getDisplayImage(): bool
+    {
         if (array_key_exists('displayImage', $this->settings)) {
             return (bool) $this->settings['displayImage'];
         }
@@ -76,7 +86,8 @@ class Settings {
         return self::DEFAULT_DISPLAYIMAGE;
     }
 
-    public function getDisplayVideo(): bool {
+    public function getDisplayVideo(): bool
+    {
         if (array_key_exists('displayVideo', $this->settings)) {
             return (bool) $this->settings['displayVideo'];
         }
@@ -84,7 +95,8 @@ class Settings {
         return self::DEFAULT_DISPLAYVIDEO;
     }
 
-    public function getDisplayOriginal(): bool {
+    public function getDisplayOriginal(): bool
+    {
         if (array_key_exists('displayOriginal', $this->settings)) {
             return (bool) $this->settings['displayOriginal'];
         }
@@ -92,7 +104,8 @@ class Settings {
         return self::DEFAULT_DISPLAYORIGINAL;
     }
 
-    public function getDisplayMetadata(): bool {
+    public function getDisplayMetadata(): bool
+    {
         if (array_key_exists('displayMetadata', $this->settings)) {
             return (bool) $this->settings['displayMetadata'];
         }
@@ -100,7 +113,8 @@ class Settings {
         return self::DEFAULT_DISPLAYMETADATA;
     }
 
-    public function getDisplayThumbnails(): bool {
+    public function getDisplayThumbnails(): bool
+    {
         if (array_key_exists('displayThumbnails', $this->settings)) {
             return (bool) $this->settings['displayThumbnails'];
         }
@@ -108,11 +122,13 @@ class Settings {
         return self::DEFAULT_DISPLAYTHUMBNAILS;
     }
 
-    public function getProcessor(): string {
+    public function getProcessor(): string
+    {
         return $this->processor;
     }
 
-    public function setProcessor(string $processor): void {
+    public function setProcessor(string $processor): void
+    {
         $this->processor = $processor;
     }
 }

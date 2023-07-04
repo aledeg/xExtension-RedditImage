@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace RedditImage\Processor;
 
-use \Throwable;
+use Throwable;
 use Minz_Log;
 use RedditImage\Content;
 use RedditImage\Exception\InvalidContentException;
@@ -15,8 +15,10 @@ use RedditImage\Transformer\Agnostic\VideoTransformer as AgnosticVideoTransforme
 use RedditImage\Transformer\Imgur\ImageTransformer as ImgurImageTransformer;
 use RedditImage\Transformer\Imgur\VideoTransformer as ImgurVideoTransformer;
 
-class BeforeDisplayProcessor extends AbstractProcessor {
-    public function __construct(Settings $settings) {
+class BeforeDisplayProcessor extends AbstractProcessor
+{
+    public function __construct(Settings $settings)
+    {
         parent::__construct($settings);
 
         if ($this->settings->getDisplayImage()) {
@@ -34,7 +36,8 @@ class BeforeDisplayProcessor extends AbstractProcessor {
      * @param \FreshRSS_Entry $entry
      * @return \FreshRSS_Entry
      */
-    public function process($entry) {
+    public function process($entry)
+    {
         if (false === $this->isRedditLink($entry)) {
             return $entry;
         }
@@ -60,7 +63,8 @@ class BeforeDisplayProcessor extends AbstractProcessor {
         return $entry;
     }
 
-    private function getImprovedContent(Content $content): string {
+    private function getImprovedContent(Content $content): string
+    {
         $improved = $content->hasBeenPreprocessed() ? $content->getPreprocessed() : $this->processContent($content);
 
         if ($improved === '') {
@@ -73,7 +77,7 @@ class BeforeDisplayProcessor extends AbstractProcessor {
         if (!$this->settings->getDisplayImage()) {
             $images = $dom->getElementsByTagName('img');
             // See https://www.php.net/manual/en/class.domnodelist.php#83390
-            for ($i = $images->length; --$i >= 0; ) {
+            for ($i = $images->length; --$i >= 0;) {
                 $image = $images->item($i);
                 $image->parentNode->removeChild($image);
             }
@@ -82,7 +86,7 @@ class BeforeDisplayProcessor extends AbstractProcessor {
         if (!$this->settings->getDisplayVideo()) {
             $videos = $dom->getElementsByTagName('video');
             // See https://www.php.net/manual/en/class.domnodelist.php#83390
-            for ($i = $videos->length; --$i >= 0; ) {
+            for ($i = $videos->length; --$i >= 0;) {
                 $video = $videos->item($i);
                 $video->parentNode->removeChild($video);
             }
@@ -102,7 +106,8 @@ class BeforeDisplayProcessor extends AbstractProcessor {
         return $dom->saveHTML() ?: '';
     }
 
-    private function processContent(Content $content): string {
+    private function processContent(Content $content): string
+    {
         foreach ($this->transformers as $transformer) {
             if (!$transformer->canTransform($content)) {
                 continue;
@@ -118,7 +123,8 @@ class BeforeDisplayProcessor extends AbstractProcessor {
         return '';
     }
 
-    private function getOriginalContent(Content $content): string {
+    private function getOriginalContent(Content $content): string
+    {
         if ($this->settings->getDisplayOriginal()) {
             return $content->getRaw();
         }
@@ -126,7 +132,8 @@ class BeforeDisplayProcessor extends AbstractProcessor {
         return '';
     }
 
-    private function getMetadataContent(Content $content): string {
+    private function getMetadataContent(Content $content): string
+    {
         if ($this->settings->getDisplayMetadata()) {
             return "<div>{$content->getMetadata()}</div>";
         }

@@ -10,14 +10,17 @@ use RedditImage\Media\Image;
 use RedditImage\Transformer\AbstractTransformer;
 use RedditImage\Transformer\TransformerInterface;
 
-class ImageTransformer extends AbstractTransformer implements TransformerInterface {
+class ImageTransformer extends AbstractTransformer implements TransformerInterface
+{
     private const MATCHING_REGEX = '#flickr.com/photos/\w+@\w+/(?P<photoId>\w+)#';
 
-    public function canTransform(Content $content): bool {
+    public function canTransform(Content $content): bool
+    {
         return $this->settings->hasFlickrApiKey() && preg_match(self::MATCHING_REGEX, $content->getContentLink()) === 1;
     }
 
-    public function transform(Content $content): string {
+    public function transform(Content $content): string
+    {
         $media = $this->getMediaMetadata($content);
 
         if ($media === []) {
@@ -37,7 +40,8 @@ class ImageTransformer extends AbstractTransformer implements TransformerInterfa
     /**
      * @return array<string, array<string, string>>
      */
-    private function getMediaMetadata(Content $content): array {
+    private function getMediaMetadata(Content $content): array
+    {
         preg_match(self::MATCHING_REGEX, $content->getContentLink(), $matches);
         $arrayResponse = $this->client->jsonGet(
             "https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key={$this->settings->getFlickrApiKey()}&photo_id={$matches['photoId']}&format=json",

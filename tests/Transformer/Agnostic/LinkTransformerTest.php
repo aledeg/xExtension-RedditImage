@@ -10,15 +10,17 @@ use RedditImage\Content;
 use RedditImage\Settings;
 use RedditImage\Transformer\Agnostic\LinkTransformer;
 
- /**
- * @covers LinkTransformer
- */
-final class LinkTransformerTest extends TestCase {
+/**
+* @covers LinkTransformer
+*/
+final class LinkTransformerTest extends TestCase
+{
     private LinkTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -30,7 +32,8 @@ final class LinkTransformerTest extends TestCase {
      * @testWith [true]
      *           [false]
      */
-    public function testCanTransform(bool $hasRealContent): void {
+    public function testCanTransform(bool $hasRealContent): void
+    {
         $this->content->expects('hasReal')
             ->once()
             ->andReturns($hasRealContent);
@@ -38,7 +41,8 @@ final class LinkTransformerTest extends TestCase {
         $this->assertEquals(!$hasRealContent, $this->transformer->canTransform($this->content));
     }
 
-    public function testTransform(): void {
+    public function testTransform(): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns('https://example.org');

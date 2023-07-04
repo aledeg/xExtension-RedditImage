@@ -6,17 +6,20 @@ namespace RedditImage\Tests\PHPUnit\Constraint;
 
 use PHPUnit\Framework\Constraint\Constraint;
 
-class htmlHasLink extends Constraint {
+class htmlHasLink extends Constraint
+{
     private string $link;
 
-    public function __construct(string $link) {
+    public function __construct(string $link)
+    {
         $this->link = $link;
     }
 
     /**
      * @param mixed $other
      */
-    public function matches($other): bool {
+    public function matches($other): bool
+    {
         if (!is_string($other)) {
             return false;
         }
@@ -36,7 +39,8 @@ class htmlHasLink extends Constraint {
         return true;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return "has the link {$this->link}";
     }
 }

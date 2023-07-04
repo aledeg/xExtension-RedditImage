@@ -11,7 +11,8 @@ use RedditImage\Settings;
 /**
  * @covers Settings
  */
-final class SettingsTest extends TestCase {
+final class SettingsTest extends TestCase
+{
     public function testWhenNoSettings(): void
     {
         $settings = new Settings([]);
@@ -53,7 +54,8 @@ final class SettingsTest extends TestCase {
         $this->assertTrue($settings->getDisplayThumbnails());
     }
 
-    public function testProcessor(): void {
+    public function testProcessor(): void
+    {
         $settings = new Settings([]);
 
         $this->assertEquals('no', $settings->getProcessor());

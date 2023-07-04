@@ -10,14 +10,17 @@ use RedditImage\Media\Video;
 use RedditImage\Transformer\AbstractTransformer;
 use RedditImage\Transformer\TransformerInterface;
 
-class VideoTransformer extends AbstractTransformer implements TransformerInterface {
+class VideoTransformer extends AbstractTransformer implements TransformerInterface
+{
     private const MATCHING_REGEX = '#(gfycat.com/)(.*/)*(?P<token>\w+)$#';
 
-    public function canTransform(Content $content): bool {
+    public function canTransform(Content $content): bool
+    {
         return preg_match(self::MATCHING_REGEX, $content->getContentLink()) === 1;
     }
 
-    public function transform(Content $content): string {
+    public function transform(Content $content): string
+    {
         $arrayResponse = $this->getMediaMetadata($content);
 
         $mp4Url = $arrayResponse['gfyItem']['mp4Url'] ?? '';
@@ -37,7 +40,8 @@ class VideoTransformer extends AbstractTransformer implements TransformerInterfa
     /**
      * @return array<int|string, mixed>
      */
-    private function getMediaMetadata(Content $content): array {
+    private function getMediaMetadata(Content $content): array
+    {
         preg_match(self::MATCHING_REGEX, $content->getContentLink(), $matches);
 
         return $this->client->jsonGet("https://api.gfycat.com/v1/gfycats/{$matches['token']}");

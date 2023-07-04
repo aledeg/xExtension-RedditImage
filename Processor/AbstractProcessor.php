@@ -7,7 +7,8 @@ namespace RedditImage\Processor;
 use RedditImage\Settings;
 use RedditImage\Transformer\TransformerInterface;
 
-abstract class AbstractProcessor {
+abstract class AbstractProcessor
+{
     protected const MATCH_REDDIT = 'reddit.com';
 
     protected Settings $settings;
@@ -15,7 +16,8 @@ abstract class AbstractProcessor {
     /** @var TransformerInterface[] */
     protected array $transformers = [];
 
-    public function __construct(Settings $settings) {
+    public function __construct(Settings $settings)
+    {
         $this->settings = $settings;
         $this->settings->setProcessor(get_class($this));
     }
@@ -30,7 +32,8 @@ abstract class AbstractProcessor {
      * @param \FreshRSS_Entry $entry
      * @return bool
      */
-    protected function isRedditLink($entry): bool {
+    protected function isRedditLink($entry): bool
+    {
         return (bool) strpos($entry->link(), static::MATCH_REDDIT);
     }
 }

@@ -12,8 +12,10 @@ use RedditImage\Media\Link;
 /**
  * @covers Link
  */
-final class LinkTest extends TestCase {
-    public function test(): void {
+final class LinkTest extends TestCase
+{
+    public function test(): void
+    {
         $media = new Link('https://example.org');
 
         $this->assertInstanceOf(DomElementInterface::class, $media);

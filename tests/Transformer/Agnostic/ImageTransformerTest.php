@@ -10,15 +10,17 @@ use RedditImage\Content;
 use RedditImage\Settings;
 use RedditImage\Transformer\Agnostic\ImageTransformer;
 
- /**
- * @covers ImageTransformer
- */
-final class ImageTransformerTest extends TestCase {
+/**
+* @covers ImageTransformer
+*/
+final class ImageTransformerTest extends TestCase
+{
     private ImageTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -29,15 +31,17 @@ final class ImageTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForCanTransform
      */
-    public function testCanTransform(string $link, bool $expected): void {
+    public function testCanTransform(string $link, bool $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($link);
-        
+
         $this->assertEquals($expected, $this->transformer->canTransform($this->content));
     }
 
-    public static function provideDataForCanTransform(): \Generator {
+    public static function provideDataForCanTransform(): \Generator
+    {
         yield 'JPG image without query string' => ['https://example.org/image.jpg', true];
         yield 'JPEG image without query string' => ['https://example.org/image.jpeg', true];
         yield 'PNG image without query string' => ['https://example.org/image.png', true];
@@ -63,7 +67,8 @@ final class ImageTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForTransform
      */
-    public function testTransform(string $input, string $expected): void {
+    public function testTransform(string $input, string $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($input);
@@ -77,7 +82,8 @@ final class ImageTransformerTest extends TestCase {
         $this->assertHtmlHasImage($html, $expected);
     }
 
-    public static function provideDataForTransform(): \Generator {
+    public static function provideDataForTransform(): \Generator
+    {
         yield 'JPG image without query string' => ['https://example.org/image.jpg', 'https://example.org/image.jpg'];
         yield 'JPEG image without query string' => ['https://example.org/image.jpeg', 'https://example.org/image.jpeg'];
         yield 'PNG image without query string' => ['https://example.org/image.png', 'https://example.org/image.png'];

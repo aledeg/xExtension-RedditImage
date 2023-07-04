@@ -6,17 +6,20 @@ namespace RedditImage\Tests\PHPUnit\Constraint;
 
 use PHPUnit\Framework\Constraint\Constraint;
 
-class htmlHasImage extends Constraint {
+class htmlHasImage extends Constraint
+{
     private string $imageUrl;
 
-    public function __construct(string $imageUrl) {
+    public function __construct(string $imageUrl)
+    {
         $this->imageUrl = $imageUrl;
     }
 
     /**
      * @param mixed $other
      */
-    public function matches($other): bool {
+    public function matches($other): bool
+    {
         if (!is_string($other)) {
             return false;
         }
@@ -36,7 +39,8 @@ class htmlHasImage extends Constraint {
         return true;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return "has the image with {$this->imageUrl} source";
     }
 }

@@ -11,15 +11,17 @@ use RedditImage\Settings;
 use RedditImage\Tests\PHPUnit\TestCase;
 use RedditImage\Transformer\Agnostic\VideoTransformer;
 
- /**
- * @covers VideoTransformer
- */
-final class VideoTransformerTest extends TestCase {
+/**
+* @covers VideoTransformer
+*/
+final class VideoTransformerTest extends TestCase
+{
     private VideoTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -30,7 +32,8 @@ final class VideoTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForCanTransform
      */
-    public function testCanTransform(string $url, bool $expected): void {
+    public function testCanTransform(string $url, bool $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($url);
@@ -38,7 +41,8 @@ final class VideoTransformerTest extends TestCase {
         $this->assertEquals($expected, $this->transformer->canTransform($this->content));
     }
 
-    public static function provideDataForCanTransform(): \Generator {
+    public static function provideDataForCanTransform(): \Generator
+    {
         yield 'MP4 video without query string' => ['https://example.org/video.mp4', true];
         yield 'WEBM video without query string' => ['https://example.org/video.webm', true];
         yield 'MP4 video with query string' => ['https://example.org/video.mp4?key=value', false];
@@ -53,7 +57,8 @@ final class VideoTransformerTest extends TestCase {
      * @testWith ["https://example.org/video.mp4"]
      *           ["https://example.org/video.webm"]
      */
-    public function testTransformWithInaccessibleResource(string $url): void {
+    public function testTransformWithInaccessibleResource(string $url): void
+    {
         $client = m::mock(Client::class);
         $client->expects('isAccessible')
             ->once()
@@ -63,12 +68,13 @@ final class VideoTransformerTest extends TestCase {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($url);
-        
+
         $this->transformer->setClient($client);
         $this->assertEquals('', $this->transformer->transform($this->content));
     }
 
-    public function testTransformWithAccessibleMp4Resource(): void {
+    public function testTransformWithAccessibleMp4Resource(): void
+    {
         $url = 'https://example.org/video.mp4';
 
         $client = m::mock(Client::class);
@@ -91,7 +97,8 @@ final class VideoTransformerTest extends TestCase {
         $this->assertHtmlHasMp4Video($html, $url);
     }
 
-    public function testTransformWithAccessibleWebmResource(): void {
+    public function testTransformWithAccessibleWebmResource(): void
+    {
         $url = 'https://example.org/video.webm';
 
         $client = m::mock(Client::class);

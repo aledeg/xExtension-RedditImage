@@ -38,6 +38,15 @@ To run the static analysis, use the following command:
 docker-compose run phpstan analyse --memory-limit 512M
 ```
 
+## Running the coding standard fixer
+
+To ensure cohesive coding standard, the code can be analyzed and fixed by using php-cs-fixer.
+
+To run the coding standard fixer, use the following command:
+```
+docker-compose run phpcsfixer fix --allow-risky yes
+```
+
 ## Troubleshooting
 
 If the test suites or the static analysis complain about missing classes, it's probably a symptom of an outdated classmap.
