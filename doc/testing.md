@@ -28,6 +28,9 @@ To run the canary test suite, use the following command:
 docker-compose run phpunit --testsuite canary
 ```
 
+**NOTE** Prior to run any test suite, copy the content of the _phpunit.xml.dist_ file into the _phpunit.xml_ file.
+Then modify the _phpunit.xml_ file content by defining the constants _IMGUR_CLIENT_ID_ and _FLICKR_API_KEY_. If this is not done, the test suites will skip some tests and ask for those values.
+
 ## Running the static analysis
 
 To ensure code quality, the code follows standards enforced through static analysis.
