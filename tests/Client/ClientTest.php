@@ -58,15 +58,6 @@ class ClientTest extends TestCase
         $this->assertEquals('https://live.staticflickr.com/65535/51962178667_fc163483f7_o.jpg', $largestImage['source']);
     }
 
-    public function testJsonGetGfycatVideo(): void
-    {
-        $json = $this->client->jsonGet('https://api.gfycat.com/v1/gfycats/sandytatteredakitainu');
-        $this->assertIsArray($json);
-
-        $this->assertEquals('https://giant.gfycat.com/SandyTatteredAkitainu.mp4', $json['gfyItem']['mp4Url'] ?? null);
-        $this->assertEquals('https://giant.gfycat.com/SandyTatteredAkitainu.webm', $json['gfyItem']['webmUrl'] ?? null);
-    }
-
     public function testJsonGetImgurGalleryWithClientId(): void
     {
         if (!defined('IMGUR_CLIENT_ID')) {

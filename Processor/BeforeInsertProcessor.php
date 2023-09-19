@@ -12,7 +12,6 @@ use RedditImage\Exception\InvalidContentException;
 use RedditImage\Settings;
 use RedditImage\Transformer\Agnostic\ImageTransformer as AgnosticImageTransformer;
 use RedditImage\Transformer\Flickr\ImageTransformer as FlickrImageTransformer;
-use RedditImage\Transformer\Gfycat\VideoTransformer as GfycatVideoTransformer;
 use RedditImage\Transformer\Imgur\GalleryWithClientIdTransformer as ImgurGalleryWithClientIdTransformer;
 use RedditImage\Transformer\Imgur\ImageTransformer as ImgurImageTransformer;
 use RedditImage\Transformer\Imgur\VideoTransformer as ImgurVideoTransformer;
@@ -29,7 +28,6 @@ class BeforeInsertProcessor extends AbstractProcessor
         $this->transformers[] = new ImgurGalleryWithClientIdTransformer($this->settings);
         $this->transformers[] = new ImgurImageTransformer($this->settings);
         $this->transformers[] = new ImgurVideoTransformer($this->settings);
-        $this->transformers[] = new GfycatVideoTransformer($this->settings);
         $this->transformers[] = new RedditVideoTransformer($this->settings);
         $this->transformers[] = new RedditGalleryTransformer($this->settings);
         $this->transformers[] = new FlickrImageTransformer($this->settings);
