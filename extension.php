@@ -67,6 +67,7 @@ class RedditImageExtension extends Minz_Extension
                 'displayThumbnails' => (bool) Minz_Request::param('display-thumbnails'),
                 'imgurClientId' => Minz_Request::param('imgur-client-id'),
                 'flickrApiKey' => Minz_Request::param('flickr-api-key'),
+                'redditDelay' => (int) Minz_Request::param('reddit-delay'),
             ];
             $this->setUserConfiguration($configuration);
             file_put_contents(

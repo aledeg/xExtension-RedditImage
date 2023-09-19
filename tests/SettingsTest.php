@@ -27,6 +27,7 @@ final class SettingsTest extends TestCase
         $this->assertTrue($settings->getDisplayOriginal());
         $this->assertFalse($settings->getDisplayMetadata());
         $this->assertFalse($settings->getDisplayThumbnails());
+        $this->assertEquals(1, $settings->getRedditDelay());
     }
 
     public function testWhenSettings(): void
@@ -40,6 +41,7 @@ final class SettingsTest extends TestCase
             'displayOriginal' => false,
             'displayMetadata' => true,
             'displayThumbnails' => true,
+            'redditDelay' => 3,
         ]);
 
         $this->assertTrue($settings->hasImgurClientId());
@@ -52,6 +54,7 @@ final class SettingsTest extends TestCase
         $this->assertFalse($settings->getDisplayOriginal());
         $this->assertTrue($settings->getDisplayMetadata());
         $this->assertTrue($settings->getDisplayThumbnails());
+        $this->assertEquals(3, $settings->getRedditDelay());
     }
 
     public function testProcessor(): void

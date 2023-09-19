@@ -23,6 +23,7 @@ class VideoTransformer extends AbstractTransformer implements TransformerInterfa
         }
 
         $dom = $this->generateDom([new Video('video/mp4', $videoUrl, $this->getAudioUrl($videoUrl))]);
+        sleep($this->settings->getRedditDelay());
 
         return $dom->saveHTML() ?: '';
     }

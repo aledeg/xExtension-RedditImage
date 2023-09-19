@@ -92,6 +92,9 @@ final class VideoTransformerTest extends TestCase
         $this->settings->expects('getProcessor')
             ->once()
             ->andReturns('test');
+        $this->settings->expects('getRedditDelay')
+            ->once()
+            ->andReturns(0);
 
         $this->transformer->setClient($client);
         $html = $this->transformer->transform($this->content);
@@ -128,6 +131,9 @@ final class VideoTransformerTest extends TestCase
         $this->settings->expects('getProcessor')
             ->once()
             ->andReturns('test');
+        $this->settings->expects('getRedditDelay')
+            ->once()
+            ->andReturns(0);
 
         $this->transformer->setClient($client);
         $html = $this->transformer->transform($this->content);

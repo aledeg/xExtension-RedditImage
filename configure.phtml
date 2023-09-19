@@ -92,4 +92,21 @@
 			<button type="reset" class="btn"><?= _t('gen.action.cancel'); ?></button>
 		</div>
 	</div>
+
+	<legend><?= _t('ext.reddit_image.section.misc') ?></legend>
+	<div class="form-group">
+		<label class="group-name" for="reddit-delay"><?= _t('ext.reddit_image.reddit_delay'); ?></label>
+		<div class="group-controls">
+            <input type="number" name="reddit-delay" id="reddit-delay" value="<?= $this->settings->getRedditDelay(); ?>" min="1" max="10"/>
+            <?= _t('ext.reddit_image.reddit_delay_unit'); ?>
+			<p class="help"><?= _i('help') ?> <?= _t('ext.reddit_image.help.reddit_delay') ?></p>
+		</div>
+	</div>
+
+	<div class="form-group form-actions">
+		<div class="group-controls">
+			<button type="submit" class="btn btn-important"><?= _t('gen.action.submit'); ?></button>
+			<button type="reset" class="btn"><?= _t('gen.action.cancel'); ?></button>
+		</div>
+	</div>
 </form>

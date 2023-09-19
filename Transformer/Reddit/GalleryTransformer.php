@@ -24,6 +24,7 @@ class GalleryTransformer extends AbstractTransformer implements TransformerInter
         foreach ($media as $id => $metadata) {
             list(, $extension) = explode('/', $metadata['m']);
             $images[] = new Image("https://i.redd.it/{$id}.{$extension}");
+            sleep($this->settings->getRedditDelay());
         }
 
         if ($images !== []) {

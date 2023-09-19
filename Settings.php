@@ -13,6 +13,7 @@ class Settings
     private const DEFAULT_DISPLAYORIGINAL = true;
     private const DEFAULT_DISPLAYMETADATA = false;
     private const DEFAULT_DISPLAYTHUMBNAILS = false;
+    private const DEFAULT_REDDITDELAY = 1;
 
     private string $processor = 'no';
     /** @var array<string, string|int|bool> */
@@ -120,6 +121,15 @@ class Settings
         }
 
         return self::DEFAULT_DISPLAYTHUMBNAILS;
+    }
+
+    public function getRedditDelay(): int
+    {
+        if (array_key_exists('redditDelay', $this->settings)) {
+            return (int) $this->settings['redditDelay'];
+        }
+
+        return self::DEFAULT_REDDITDELAY;
     }
 
     public function getProcessor(): string
