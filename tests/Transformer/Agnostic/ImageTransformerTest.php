@@ -42,26 +42,18 @@ final class ImageTransformerTest extends TestCase
 
     public static function provideDataForCanTransform(): \Generator
     {
-        yield 'JPG image without query string' => ['https://example.org/image.jpg', true];
-        yield 'JPEG image without query string' => ['https://example.org/image.jpeg', true];
-        yield 'PNG image without query string' => ['https://example.org/image.png', true];
-        yield 'BMP image without query string' => ['https://example.org/image.bmp', true];
-        yield 'GIF image without query string' => ['https://example.org/image.gif', true];
-        yield 'JPG image with query string' => ['https://example.org/image.jpg?key=value', true];
-        yield 'JPEG image with query string' => ['https://example.org/image.jpeg?key=value', true];
-        yield 'PNG image with query string' => ['https://example.org/image.png?key=value', true];
-        yield 'BMP image with query string' => ['https://example.org/image.bmp?key=value', true];
-        yield 'GIF image with query string' => ['https://example.org/image.gif?key=value', true];
-        yield 'JPG format in query string' => ['https://example.org/image?format=jpg', false];
-        yield 'JPEG format in query string' => ['https://example.org/image?format=jpeg', false];
-        yield 'PNG format in query string' => ['https://example.org/image?format=png', false];
-        yield 'BMP format in query string' => ['https://example.org/image?format=bmp', false];
-        yield 'GIF format in query string' => ['https://example.org/image?format=gif', false];
-        yield 'JPG as route section' => ['https://example.org/jpg', false];
-        yield 'JPEG as route section' => ['https://example.org/jpeg', false];
-        yield 'PNG as route section' => ['https://example.org/png', false];
-        yield 'BMP as route section' => ['https://example.org/bmp', false];
-        yield 'GIF as route section' => ['https://example.org/gif', false];
+        foreach(['jpg', 'jpeg', 'png', 'bmp', 'gif'] as $format) {
+            yield from self::provideDataForFormat($format);
+        }
+        yield 'redgifs images are not suppported' => ['https://i.redgifs.com/i/image.jpg', false];
+    }
+
+    private static function provideDataForFormat(string $format): \Generator
+    {
+        yield "{$format} image without query string" => ["https://example.org/image.{$format}", true];
+        yield "{$format} image with query string" => ["https://example.org/image.{$format}?key=value", true];
+        yield "{$format} format in query string" => ["https://example.org/image?format={$format}", false];
+        yield "{$format} as route section" => ["https://example.org/{$format}", false];
     }
 
     /**

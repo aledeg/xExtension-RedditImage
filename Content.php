@@ -116,7 +116,8 @@ class Content
      * to the author page, the link to the current message, and the link to the
      * current message comment section.
      */
-    private function extractMetadata(): void {
+    private function extractMetadata(): void
+    {
         if (preg_match('#(?P<metadata>\s*?submitted.*</span>)#', $this->raw, $matches)) {
             $this->metadata = $matches['metadata'];
         }
