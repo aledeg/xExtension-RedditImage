@@ -107,7 +107,7 @@ class Content {
      * current message comment section.
      */
     private function extractMetadata(): void {
-        if (preg_match('#(?P<metadata>\s{3}submitted.*</span>)#', $this->raw, $matches)) {
+        if (preg_match('#(?P<metadata>\s*?submitted.*</span>)#', $this->raw, $matches)) {
             $this->metadata = $matches['metadata'];
         }
     }
