@@ -1,0 +1,14 @@
+name: Automated tests
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: make install
+      - run: make coding-style
+      - run: make static-analysis
+      - run: make test-default

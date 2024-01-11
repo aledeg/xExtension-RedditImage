@@ -11,15 +11,17 @@ use RedditImage\Settings;
 use RedditImage\Tests\PHPUnit\TestCase;
 use RedditImage\Transformer\Imgur\GalleryWithClientIdTransformer;
 
- /**
- * @covers GalleryWithClientIdTransformer
- */
-final class GalleryWithClientIdTransformerTest extends TestCase {
+/**
+* @covers GalleryWithClientIdTransformer
+*/
+final class GalleryWithClientIdTransformerTest extends TestCase
+{
     private GalleryWithClientIdTransformer $transformer;
     private Content&m\MockInterface $content;
     private Settings&m\MockInterface $settings;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->content = m::mock(Content::class);
@@ -30,7 +32,8 @@ final class GalleryWithClientIdTransformerTest extends TestCase {
     /**
      * @dataProvider provideDataForCanTransform
      */
-    public function testCanTransform(string $link, bool $hasClientId, bool $expected): void {
+    public function testCanTransform(string $link, bool $hasClientId, bool $expected): void
+    {
         $this->content->expects('getContentLink')
             ->once()
             ->andReturns($link);
@@ -41,7 +44,8 @@ final class GalleryWithClientIdTransformerTest extends TestCase {
         $this->assertEquals($expected, $this->transformer->canTransform($this->content));
     }
 
-    public static function provideDataForCanTransform(): \Generator {
+    public static function provideDataForCanTransform(): \Generator
+    {
         yield 'client id, not an Imgur URL' => ['https://example.org', true, false];
         yield 'client id, not an Imgur album URL' => ['https://imgur.com/image.png', false, false];
         yield 'client id, Imgur album URL' => ['https://imgur.com/a/abc123', true, true];
@@ -52,7 +56,8 @@ final class GalleryWithClientIdTransformerTest extends TestCase {
         yield 'no client id, Imgur album URL with query string' => ['https://imgur.com/a/abc123?key=value', false, false];
     }
 
-    public function testTransformWhenNoContent(): void {
+    public function testTransformWhenNoContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()
@@ -72,7 +77,8 @@ final class GalleryWithClientIdTransformerTest extends TestCase {
         $this->assertEquals('', $this->transformer->transform($this->content));
     }
 
-    public function testTransformWhenContent(): void {
+    public function testTransformWhenContent(): void
+    {
         $client = m::mock(Client::class);
         $client->expects('jsonGet')
             ->once()

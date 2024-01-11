@@ -9,14 +9,17 @@ use RedditImage\Media\Link;
 use RedditImage\Transformer\AbstractTransformer;
 use RedditImage\Transformer\TransformerInterface;
 
-class LinkTransformer extends AbstractTransformer implements TransformerInterface {
-    public function canTransform(Content $content): bool {
+class LinkTransformer extends AbstractTransformer implements TransformerInterface
+{
+    public function canTransform(Content $content): bool
+    {
         return !$content->hasReal();
     }
 
-    public function transform(Content $content): string {
+    public function transform(Content $content): string
+    {
         $dom = $this->generateDom([new Link($content->getContentLink())]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 }

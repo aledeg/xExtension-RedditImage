@@ -6,8 +6,8 @@ namespace RedditImage;
 
 use RedditImage\Exception\InvalidContentException;
 
-class Content {
-    private string $content;
+class Content
+{
     private string $preprocessed = '';
     private string $metadata = '';
     private ?string $contentLink = null;
@@ -15,8 +15,8 @@ class Content {
     private string $raw;
     private string $real = '';
 
-    public function __construct(string $content) {
-        $this->content = $content;
+    public function __construct(string $content)
+    {
         $this->raw = $content;
 
         $this->splitContent($content);
@@ -29,7 +29,8 @@ class Content {
         }
     }
 
-    private function isValid(): bool {
+    private function isValid(): bool
+    {
         if ($this->metadata === '') {
             return false;
         }
@@ -42,35 +43,43 @@ class Content {
         return true;
     }
 
-    public function getContentLink(): ?string {
+    public function getContentLink(): ?string
+    {
         return $this->contentLink;
     }
 
-    public function getCommentsLink(): ?string {
+    public function getCommentsLink(): ?string
+    {
         return $this->commentsLink;
     }
 
-    public function getPreprocessed(): string {
+    public function getPreprocessed(): string
+    {
         return $this->preprocessed;
     }
 
-    public function getMetadata(): string {
+    public function getMetadata(): string
+    {
         return $this->metadata;
     }
 
-    public function getRaw(): string {
+    public function getRaw(): string
+    {
         return $this->raw;
     }
 
-    public function getReal(): string {
+    public function getReal(): string
+    {
         return $this->real;
     }
 
-    public function hasBeenPreprocessed(): bool {
+    public function hasBeenPreprocessed(): bool
+    {
         return '' !== $this->preprocessed;
     }
 
-    public function hasReal(): bool {
+    public function hasReal(): bool
+    {
         return '' !== $this->real;
     }
 
@@ -81,7 +90,8 @@ class Content {
      * fetch quickly. For instance when API calls are involved. Thus we need to
      * separate the feed raw content from the preprocessed content.
      */
-    private function splitContent(string $content): void {
+    private function splitContent(string $content): void
+    {
         $dom = new \DomDocument('1.0', 'UTF-8');
         $dom->loadHTML(
             htmlspecialchars_decode(htmlentities(html_entity_decode($content))),
@@ -91,10 +101,10 @@ class Content {
         $xpath = new \DOMXpath($dom);
         $redditImage = $xpath->query("//div[contains(@class,'reddit-image')]");
 
-        if (1 === $redditImage->length) {
+        if ($redditImage !== false && $redditImage->length === 1) {
             $node = $redditImage->item(0);
-            $this->preprocessed = $dom->saveHTML($node->parentNode->firstChild);
-            $this->raw = $dom->saveHTML($node->parentNode->lastChild);
+            $this->preprocessed = $dom->saveHTML($node->parentNode->firstChild) ?: '';
+            $this->raw = $dom->saveHTML($node->parentNode->lastChild) ?: '';
         }
     }
 
@@ -106,7 +116,8 @@ class Content {
      * to the author page, the link to the current message, and the link to the
      * current message comment section.
      */
-    private function extractMetadata(): void {
+    private function extractMetadata(): void
+    {
         if (preg_match('#(?P<metadata>\s*?submitted.*</span>)#', $this->raw, $matches)) {
             $this->metadata = $matches['metadata'];
         }
@@ -119,7 +130,8 @@ class Content {
      *   - content link.
      *   - comments link.
      */
-    private function extractLinks(): void {
+    private function extractLinks(): void
+    {
         $dom = new \DomDocument('1.0', 'UTF-8');
         $dom->loadHTML(
             htmlspecialchars_decode(htmlentities(html_entity_decode($this->raw))),
@@ -134,6 +146,7 @@ class Content {
                     break;
                 case '[comments]':
                     $this->commentsLink = $link->getAttribute('href');
+                    // no break
                 default:
                     break;
             }
@@ -147,7 +160,8 @@ class Content {
      * class attribute is sanitized to data-sanitized-class attribute when
      * processed by SimplePie.
      */
-    private function extractReal(): void {
+    private function extractReal(): void
+    {
         $dom = new \DomDocument('1.0', 'UTF-8');
         $dom->loadHTML(
             htmlspecialchars_decode(htmlentities(html_entity_decode($this->raw))),
@@ -156,9 +170,9 @@ class Content {
 
         $xpath = new \DOMXpath($dom);
         $mdNode = $xpath->query("//div[contains(@data-sanitized-class,'md')]");
-        if (1 === $mdNode->length) {
+        if ($mdNode !== false && $mdNode->length === 1) {
             $node = $mdNode->item(0);
-            $this->real = $dom->saveHTML($node);
+            $this->real = $dom->saveHTML($node) ?: '';
         }
     }
 }

@@ -15,10 +15,12 @@ use RedditImage\Tests\PHPUnit\TestCase;
  * the configuration to limit the number of calls. For that same reason, those
  * tests might break for reasons outside the scope of that project.
  */
-class ClientTest extends TestCase {
+class ClientTest extends TestCase
+{
     private Client $client;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->client = new Client('Reddit Image/test by Alexis Degrugillier');
@@ -28,11 +30,13 @@ class ClientTest extends TestCase {
      * @testWith ["https://example.org", true]
      *           ["https://github.com/aledeg/xExtension-RedditImage/404", false]
      */
-    public function testIsAccessible(string $url, bool $isAccessible): void {
+    public function testIsAccessible(string $url, bool $isAccessible): void
+    {
         $this->assertEquals($isAccessible, $this->client->isAccessible($url));
     }
 
-    public function testJsonGetFlickrImage(): void {
+    public function testJsonGetFlickrImage(): void
+    {
         if (!defined('FLICKR_API_KEY')) {
             $this->markTestSkipped('Flickr api key is not defined in the configuration file');
         }
@@ -54,15 +58,8 @@ class ClientTest extends TestCase {
         $this->assertEquals('https://live.staticflickr.com/65535/51962178667_fc163483f7_o.jpg', $largestImage['source']);
     }
 
-    public function testJsonGetGfycatVideo(): void {
-        $json = $this->client->jsonGet('https://api.gfycat.com/v1/gfycats/sandytatteredakitainu');
-        $this->assertIsArray($json);
-
-        $this->assertEquals('https://giant.gfycat.com/SandyTatteredAkitainu.mp4', $json['gfyItem']['mp4Url'] ?? null);
-        $this->assertEquals('https://giant.gfycat.com/SandyTatteredAkitainu.webm', $json['gfyItem']['webmUrl'] ?? null);
-    }
-
-    public function testJsonGetImgurGalleryWithClientId(): void {
+    public function testJsonGetImgurGalleryWithClientId(): void
+    {
         if (!defined('IMGUR_CLIENT_ID')) {
             $this->markTestSkipped('Imgur client ID is not defined in the configuration file');
         }
@@ -98,7 +95,8 @@ class ClientTest extends TestCase {
         ], $links);
     }
 
-    public function testJsonGetRedditGallery(): void {
+    public function testJsonGetRedditGallery(): void
+    {
         $json = $this->client->jsonGet('https://www.reddit.com/r/quilting/comments/13ajhjf/lochness_monster_fpp_block/.json');
         $this->assertIsArray($json);
 
@@ -121,7 +119,8 @@ class ClientTest extends TestCase {
         }
     }
 
-    public function testJsonGetRedditGalleryWithCrosspost(): void {
+    public function testJsonGetRedditGalleryWithCrosspost(): void
+    {
         $json = $this->client->jsonGet('https://www.reddit.com/r/LegendsOfRuneterra/comments/l2k33y/might_be_an_obvious_connection_but_i_just_noticed/.json');
         $this->assertIsArray($json);
 
@@ -139,7 +138,8 @@ class ClientTest extends TestCase {
         }
     }
 
-    public function testJsonGetRedditVideo(): void {
+    public function testJsonGetRedditVideo(): void
+    {
         $json = $this->client->jsonGet('https://www.reddit.com/r/oddlyterrifying/comments/13ommr2/while_some_find_a_baby_stingray_video_shoot/.json');
         $this->assertIsArray($json);
 
@@ -147,7 +147,8 @@ class ClientTest extends TestCase {
         $this->assertEquals('https://v.redd.it/nvcnk4qsee1b1/DASH_1080.mp4?source=fallback', $metadata);
     }
 
-    public function testJsonGetRedditVideoWithCrosspost(): void {
+    public function testJsonGetRedditVideoWithCrosspost(): void
+    {
         $json = $this->client->jsonGet('https://www.reddit.com/r/hiddenrooms/comments/11vohr2/crosspost_from_rcarpentry_throwback_to_a_really/.json');
         $this->assertIsArray($json);
 

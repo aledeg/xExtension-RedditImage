@@ -6,14 +6,23 @@ namespace RedditImage\Client;
 
 use RedditImage\Exception\ClientException;
 
-class Client {
+class Client
+{
     private string $userAgent;
 
-    public function __construct(string $userAgent) {
+    public function __construct(string $userAgent)
+    {
         $this->userAgent = $userAgent;
     }
 
-    public function jsonGet(string $url, array $headers = [], callable $payloadModifier = null): array {
+    /**
+     * @param string $url
+     * @param string[] $headers
+     * @param callable $payloadModifier
+     * @return array<mixed, mixed>
+     */
+    public function jsonGet(string $url, array $headers = [], callable $payloadModifier = null): array
+    {
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,
@@ -37,7 +46,13 @@ class Client {
         return json_decode($jsonString, true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function isAccessible(string $url, array $headers = []): bool {
+    /**
+     * @param string $url
+     * @param string[] $headers
+     * @return bool
+     */
+    public function isAccessible(string $url, array $headers = []): bool
+    {
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,

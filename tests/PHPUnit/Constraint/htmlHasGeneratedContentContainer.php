@@ -6,8 +6,13 @@ namespace RedditImage\Tests\PHPUnit\Constraint;
 
 use PHPUnit\Framework\Constraint\Constraint;
 
-class htmlHasGeneratedContentContainer extends Constraint {
-    public function matches($other): bool {
+class htmlHasGeneratedContentContainer extends Constraint
+{
+    /**
+     * @param mixed $other
+     */
+    public function matches($other): bool
+    {
         if (!is_string($other)) {
             return false;
         }
@@ -19,7 +24,7 @@ class htmlHasGeneratedContentContainer extends Constraint {
 
         $xpath = new \DOMXpath($dom);
         $container = $xpath->query("body/div[@class='reddit-image figure']");
-        if ($container->length !== 1) {
+        if ($container === false || $container->length !== 1) {
             return false;
         }
 
@@ -31,7 +36,8 @@ class htmlHasGeneratedContentContainer extends Constraint {
         return preg_match('#xExtension-RedditImage/\w+ \| \w+ \| RedditImage\\\\Transformer\\\\.+Transformer#', $comment->textContent) === 1;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return 'has a content container';
     }
 }

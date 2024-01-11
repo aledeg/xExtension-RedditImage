@@ -12,8 +12,10 @@ use RedditImage\Media\Image;
 /**
  * @covers Image
  */
-final class ImageTest extends TestCase {
-    public function test(): void {
+final class ImageTest extends TestCase
+{
+    public function test(): void
+    {
         $media = new Image('https://example.org');
 
         $this->assertInstanceOf(DomElementInterface::class, $media);

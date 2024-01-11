@@ -6,14 +6,20 @@ namespace RedditImage\Tests\PHPUnit\Constraint;
 
 use PHPUnit\Framework\Constraint\Constraint;
 
-class htmlHasImage extends Constraint {
+class htmlHasImage extends Constraint
+{
     private string $imageUrl;
 
-    public function __construct(string $imageUrl) {
+    public function __construct(string $imageUrl)
+    {
         $this->imageUrl = $imageUrl;
     }
 
-    public function matches($other): bool {
+    /**
+     * @param mixed $other
+     */
+    public function matches($other): bool
+    {
         if (!is_string($other)) {
             return false;
         }
@@ -26,14 +32,15 @@ class htmlHasImage extends Constraint {
         $xpath = new \DOMXpath($dom);
         $images = $xpath->query("body/div/img[@class='reddit-image'][@src='{$this->imageUrl}']");
 
-        if ($images->length !== 1) {
+        if ($images === false || $images->length !== 1) {
             return false;
         }
 
         return true;
     }
 
-    public function toString(): string {
+    public function toString(): string
+    {
         return "has the image with {$this->imageUrl} source";
     }
 }

@@ -11,7 +11,8 @@ use RedditImage\Settings;
 /**
  * @covers Settings
  */
-final class SettingsTest extends TestCase {
+final class SettingsTest extends TestCase
+{
     public function testWhenNoSettings(): void
     {
         $settings = new Settings([]);
@@ -26,6 +27,7 @@ final class SettingsTest extends TestCase {
         $this->assertTrue($settings->getDisplayOriginal());
         $this->assertFalse($settings->getDisplayMetadata());
         $this->assertFalse($settings->getDisplayThumbnails());
+        $this->assertEquals(1, $settings->getRedditDelay());
     }
 
     public function testWhenSettings(): void
@@ -39,6 +41,7 @@ final class SettingsTest extends TestCase {
             'displayOriginal' => false,
             'displayMetadata' => true,
             'displayThumbnails' => true,
+            'redditDelay' => 3,
         ]);
 
         $this->assertTrue($settings->hasImgurClientId());
@@ -51,9 +54,11 @@ final class SettingsTest extends TestCase {
         $this->assertFalse($settings->getDisplayOriginal());
         $this->assertTrue($settings->getDisplayMetadata());
         $this->assertTrue($settings->getDisplayThumbnails());
+        $this->assertEquals(3, $settings->getRedditDelay());
     }
 
-    public function testProcessor(): void {
+    public function testProcessor(): void
+    {
         $settings = new Settings([]);
 
         $this->assertEquals('no', $settings->getProcessor());

@@ -9,14 +9,17 @@ use RedditImage\Media\Video;
 use RedditImage\Transformer\AbstractTransformer;
 use RedditImage\Transformer\TransformerInterface;
 
-class VideoTransformer extends AbstractTransformer implements TransformerInterface {
+class VideoTransformer extends AbstractTransformer implements TransformerInterface
+{
     private const MATCHING_REGEX = '#(?P<baseurl>.+\.)(?P<extension>webm|mp4)$#';
 
-    public function canTransform(Content $content): bool {
+    public function canTransform(Content $content): bool
+    {
         return preg_match(self::MATCHING_REGEX, $content->getContentLink()) === 1;
     }
 
-    public function transform(Content $content): string {
+    public function transform(Content $content): string
+    {
         $url = $content->getContentLink();
         preg_match(self::MATCHING_REGEX, $url, $matches);
 
@@ -27,6 +30,6 @@ class VideoTransformer extends AbstractTransformer implements TransformerInterfa
         $extension = $matches['extension'];
         $dom = $this->generateDom([new Video("video/{$extension}", $url)]);
 
-        return $dom->saveHTML();
+        return $dom->saveHTML() ?: '';
     }
 }

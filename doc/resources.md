@@ -6,9 +6,6 @@
 1. [Photo image URLs](https://www.flickr.com/services/api/misc.urls.html)
 1. [flickr.photos.getSizes](https://www.flickr.com/services/api/flickr.photos.getSizes.html)
 
-## Gfycat API
-1. [API Reference](https://developers.gfycat.com/api/#getting-info-for-a-single-gfycat)
-
 ## Imgur API
 1. [Authorization and OAuth](https://apidocs.imgur.com/#authorization-and-oauth)
 1. [Album images](https://apidocs.imgur.com/#7dde894b-a967-4419-9be2-082fbf379109)

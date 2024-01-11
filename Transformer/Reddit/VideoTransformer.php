@@ -9,22 +9,27 @@ use RedditImage\Media\Video;
 use RedditImage\Transformer\AbstractTransformer;
 use RedditImage\Transformer\TransformerInterface;
 
-class VideoTransformer extends AbstractTransformer implements TransformerInterface {
-    public function canTransform(Content $content): bool {
+class VideoTransformer extends AbstractTransformer implements TransformerInterface
+{
+    public function canTransform(Content $content): bool
+    {
         return preg_match('#v.redd.it#', $content->getContentLink()) === 1;
     }
 
-    public function transform(Content $content): string {
+    public function transform(Content $content): string
+    {
         if ('' === $videoUrl = $this->getVideoUrl($content)) {
             return '';
         }
 
         $dom = $this->generateDom([new Video('video/mp4', $videoUrl, $this->getAudioUrl($videoUrl))]);
-        
-        return $dom->saveHTML();
+        sleep($this->settings->getRedditDelay());
+
+        return $dom->saveHTML() ?: '';
     }
 
-    private function getVideoUrl(Content $content): string {
+    private function getVideoUrl(Content $content): string
+    {
         $arrayResponse = $this->client->jsonGet("{$content->getCommentsLink()}.json");
 
         $videoUrl = $arrayResponse[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url']
@@ -34,7 +39,8 @@ class VideoTransformer extends AbstractTransformer implements TransformerInterfa
         return str_replace('?source=fallback', '', $videoUrl);
     }
 
-    private function getAudioUrl(string $videoUrl): string {
+    private function getAudioUrl(string $videoUrl): string
+    {
         return preg_replace('#DASH_.+\.mp4#', 'DASH_audio.mp4', $videoUrl);
     }
 }

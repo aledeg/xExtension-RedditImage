@@ -7,23 +7,27 @@ use RedditImage\Processor\BeforeInsertProcessor;
 use RedditImage\Processor\BeforeDisplayProcessor;
 use RedditImage\Settings;
 
-class RedditImageExtension extends Minz_Extension {
+class RedditImageExtension extends Minz_Extension
+{
     private BeforeDisplayProcessor $beforeDisplayProcessor;
     private BeforeInsertProcessor $beforeInsertProcessor;
     public Settings $settings;
 
-    public function autoload($class_name): void {
+    public function autoload(string $class_name): void
+    {
         if (0 === strpos($class_name, 'RedditImage')) {
             $class_name = substr($class_name, 12);
             include $this->getPath() . DIRECTORY_SEPARATOR . str_replace('\\', '/', $class_name) . '.php';
         }
     }
 
-    private function getUserAgent(): string {
+    private function getUserAgent(): string
+    {
         return "{$this->getName()}/{$this->getVersion()} by {$this->getAuthor()}";
     }
 
-    public function init(): void {
+    public function init(): void
+    {
         spl_autoload_register([$this, 'autoload']);
 
         define('REDDITIMAGE_VERSION', $this->getVersion());
@@ -46,7 +50,8 @@ class RedditImageExtension extends Minz_Extension {
         $this->registerHook('entry_before_insert', [$this->beforeInsertProcessor, 'process']);
     }
 
-    public function handleConfigureAction(): void {
+    public function handleConfigureAction(): void
+    {
         $this->registerTranslates();
 
         $current_user = Minz_Session::param('currentUser');
@@ -62,6 +67,7 @@ class RedditImageExtension extends Minz_Extension {
                 'displayThumbnails' => (bool) Minz_Request::param('display-thumbnails'),
                 'imgurClientId' => Minz_Request::param('imgur-client-id'),
                 'flickrApiKey' => Minz_Request::param('flickr-api-key'),
+                'redditDelay' => (int) Minz_Request::param('reddit-delay'),
             ];
             $this->setUserConfiguration($configuration);
             file_put_contents(

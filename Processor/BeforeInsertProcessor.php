@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace RedditImage\Processor;
 
-use \Throwable;
+use Throwable;
 use Minz_Log;
 use RedditImage\Client\Client;
 use RedditImage\Content;
@@ -12,22 +12,22 @@ use RedditImage\Exception\InvalidContentException;
 use RedditImage\Settings;
 use RedditImage\Transformer\Agnostic\ImageTransformer as AgnosticImageTransformer;
 use RedditImage\Transformer\Flickr\ImageTransformer as FlickrImageTransformer;
-use RedditImage\Transformer\Gfycat\VideoTransformer as GfycatVideoTransformer;
 use RedditImage\Transformer\Imgur\GalleryWithClientIdTransformer as ImgurGalleryWithClientIdTransformer;
 use RedditImage\Transformer\Imgur\ImageTransformer as ImgurImageTransformer;
 use RedditImage\Transformer\Imgur\VideoTransformer as ImgurVideoTransformer;
 use RedditImage\Transformer\Reddit\GalleryTransformer as RedditGalleryTransformer;
 use RedditImage\Transformer\Reddit\VideoTransformer as RedditVideoTransformer;
 
-class BeforeInsertProcessor extends AbstractProcessor {
-    public function __construct(Settings $settings, Client $client) {
+class BeforeInsertProcessor extends AbstractProcessor
+{
+    public function __construct(Settings $settings, Client $client)
+    {
         parent::__construct($settings);
 
         $this->transformers[] = new AgnosticImageTransformer($this->settings);
         $this->transformers[] = new ImgurGalleryWithClientIdTransformer($this->settings);
         $this->transformers[] = new ImgurImageTransformer($this->settings);
         $this->transformers[] = new ImgurVideoTransformer($this->settings);
-        $this->transformers[] = new GfycatVideoTransformer($this->settings);
         $this->transformers[] = new RedditVideoTransformer($this->settings);
         $this->transformers[] = new RedditGalleryTransformer($this->settings);
         $this->transformers[] = new FlickrImageTransformer($this->settings);
@@ -38,10 +38,11 @@ class BeforeInsertProcessor extends AbstractProcessor {
     }
 
     /**
-     * @param FreshRSS_Entry $entry
-     * @return FreshRSS_Entry
+     * @param \FreshRSS_Entry $entry
+     * @return \FreshRSS_Entry
      */
-    public function process($entry) {
+    public function process($entry)
+    {
         if (false === $this->isRedditLink($entry)) {
             return $entry;
         }

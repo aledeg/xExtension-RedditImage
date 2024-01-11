@@ -12,11 +12,13 @@ use RedditImage\Media\Video;
 /**
  * @covers Video
  */
-final class VideoTest extends TestCase {
+final class VideoTest extends TestCase
+{
     private \DomDocument&m\MockInterface $dom;
     private \DomElement&m\MockInterface $video;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         $this->video = m::mock(\DomElement::class);
@@ -37,13 +39,15 @@ final class VideoTest extends TestCase {
             ->andReturns($this->video);
     }
 
-    public function testWithoutData(): void {
+    public function testWithoutData(): void
+    {
         $media = new Video();
 
         $this->assertEquals($this->video, $media->toDomElement($this->dom));
     }
 
-    public function testWithIncompleteVideoSource(): void {
+    public function testWithIncompleteVideoSource(): void
+    {
         // No video URL
         $media = new Video('video/webm');
         $this->assertEquals($this->video, $media->toDomElement($this->dom));
@@ -53,7 +57,8 @@ final class VideoTest extends TestCase {
         $this->assertEquals($this->video, $media->toDomElement($this->dom));
     }
 
-    public function testWithSingleVideoSourceAndNoAudioTrack(): void {
+    public function testWithSingleVideoSourceAndNoAudioTrack(): void
+    {
         $source = m::mock(\DomElement::class);
         $source->expects('setAttribute')
             ->once()
@@ -66,7 +71,7 @@ final class VideoTest extends TestCase {
             ->once()
             ->with('source')
             ->andReturns($source);
-        
+
         $this->video->expects('appendChild')
             ->once()
             ->with($source)
@@ -76,7 +81,8 @@ final class VideoTest extends TestCase {
         $this->assertEquals($this->video, $media->toDomElement($this->dom));
     }
 
-    public function testWithMultipleVideoSourcesAndNoAudioTrack(): void {
+    public function testWithMultipleVideoSourcesAndNoAudioTrack(): void
+    {
         $source1 = m::mock(\DomElement::class);
         $source1->expects('setAttribute')
             ->once()
@@ -89,7 +95,7 @@ final class VideoTest extends TestCase {
             ->once()
             ->with('source')
             ->andReturns($source1);
-        
+
         $this->video->expects('appendChild')
             ->once()
             ->with($source1)
@@ -107,7 +113,7 @@ final class VideoTest extends TestCase {
             ->once()
             ->with('source')
             ->andReturns($source2);
-        
+
         $this->video->expects('appendChild')
             ->once()
             ->with($source2)
@@ -118,7 +124,8 @@ final class VideoTest extends TestCase {
         $this->assertEquals($this->video, $media->toDomElement($this->dom));
     }
 
-    public function testWithSingleVideoSourceAndAudioTrack(): void {
+    public function testWithSingleVideoSourceAndAudioTrack(): void
+    {
         $audio = m::mock(\DomElement::class);
         $audio->expects('setAttribute')
             ->once()
@@ -161,7 +168,7 @@ final class VideoTest extends TestCase {
             ->once()
             ->with('source')
             ->andReturns($videoSource);
-        
+
         $this->video->expects('appendChild')
             ->once()
             ->with($videoSource)
@@ -171,7 +178,8 @@ final class VideoTest extends TestCase {
         $this->assertEquals($this->video, $media->toDomElement($this->dom));
     }
 
-    public function testWithMultipleVideoSourcesAndAudioTrack(): void {
+    public function testWithMultipleVideoSourcesAndAudioTrack(): void
+    {
         $audio = m::mock(\DomElement::class);
         $audio->expects('setAttribute')
             ->once()
@@ -214,7 +222,7 @@ final class VideoTest extends TestCase {
             ->once()
             ->with('source')
             ->andReturns($videoSource1);
-        
+
         $this->video->expects('appendChild')
             ->once()
             ->with($videoSource1)
@@ -232,12 +240,12 @@ final class VideoTest extends TestCase {
             ->once()
             ->with('source')
             ->andReturns($videoSource2);
-        
+
         $this->video->expects('appendChild')
             ->once()
             ->with($videoSource2)
             ->andReturns($videoSource2);
-    
+
         $media = new Video('video/webm', 'https://example.org/video.webm', 'https://example.org/audio.mp3');
         $media->addSource('video/mp4', 'https://example.org/video.mp4');
         $this->assertEquals($this->video, $media->toDomElement($this->dom));
