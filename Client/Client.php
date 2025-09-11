@@ -18,10 +18,10 @@ class Client
     /**
      * @param string $url
      * @param string[] $headers
-     * @param callable $payloadModifier
+     * @param callable|null $payloadModifier
      * @return array<mixed, mixed>
      */
-    public function jsonGet(string $url, array $headers = [], callable $payloadModifier = null): array
+    public function jsonGet(string $url, array $headers = [], ?callable $payloadModifier = null): array
     {
         $ch = curl_init();
         curl_setopt_array($ch, [
