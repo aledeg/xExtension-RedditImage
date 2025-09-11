@@ -7,24 +7,24 @@ help: ## Display this help.
 ##@ Setting environment
 .PHONY: install
 install: ## Install the dev environment (phpunit, phpstan, ...)
-	@docker-compose run composer install
+	@docker compose run composer install
 
 .PHONY: classmap
 classmap: ## Refresh classmap for autoloading
-	@docker-compose run composer dump-autoload
+	@docker compose run composer dump-autoload
 
 ##@ Testing
 .PHONY: coding-style
 coding-style: classmap ## Run the coding style fixer on all PHP files
-	@docker-compose run phpcsfixer fix --allow-risky yes
+	@docker compose run phpcsfixer fix --allow-risky yes
 
 .PHONY: static-analysis
 static-analysis: classmap ## Run the static analysis on all PHP files
-	@docker-compose run phpstan analyse --memory-limit 512M
+	@docker compose run phpstan analyse --memory-limit 512M
 
 .PHONY: test-testsuite
 test-testsuite: classmap
-	@docker-compose run phpunit --testsuite $(TESTSUITE)
+	@docker compose run phpunit --testsuite $(TESTSUITE)
 
 .PHONY: test-default
 test-default: TESTSUITE=default
