@@ -63,16 +63,16 @@ class RedditImageExtension extends Minz_Extension
 
         if (Minz_Request::isPost()) {
             $configuration = [
-                'imageHeight' => (int) Minz_Request::param('image-height', $this->settings->getDefaultImageHeight()),
-                'mutedVideo' => (bool) Minz_Request::param('muted-video'),
-                'displayImage' => (bool) Minz_Request::param('display-image'),
-                'displayVideo' => (bool) Minz_Request::param('display-video'),
-                'displayOriginal' => (bool) Minz_Request::param('display-original'),
-                'displayMetadata' => (bool) Minz_Request::param('display-metadata'),
-                'displayThumbnails' => (bool) Minz_Request::param('display-thumbnails'),
+                'imageHeight' => Minz_Request::paramIntNull('image-height') ?? $this->settings->getDefaultImageHeight(),
+                'mutedVideo' => Minz_Request::paramBoolean('muted-video'),
+                'displayImage' => Minz_Request::paramBoolean('display-image'),
+                'displayVideo' => Minz_Request::paramBoolean('display-video'),
+                'displayOriginal' => Minz_Request::paramBoolean('display-original'),
+                'displayMetadata' => Minz_Request::paramBoolean('display-metadata'),
+                'displayThumbnails' => Minz_Request::paramBoolean('display-thumbnails'),
                 'imgurClientId' => Minz_Request::param('imgur-client-id'),
                 'flickrApiKey' => Minz_Request::param('flickr-api-key'),
-                'redditDelay' => (int) Minz_Request::param('reddit-delay'),
+                'redditDelay' => Minz_Request::paramInt('reddit-delay'),
             ];
             $this->setUserConfiguration($configuration);
             file_put_contents(
