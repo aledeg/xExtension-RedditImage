@@ -46,8 +46,13 @@ class RedditImageExtension extends Minz_Extension
         $this->beforeDisplayProcessor = new BeforeDisplayProcessor($this->settings);
         $this->beforeInsertProcessor = new BeforeInsertProcessor($this->settings, new Client($this->getUserAgent()));
 
-        $this->registerHook('entry_before_display', [$this->beforeDisplayProcessor, 'process']);
-        $this->registerHook('entry_before_insert', [$this->beforeInsertProcessor, 'process']);
+        if (version_compare(FRESHRSS_VERSION, '1.28') >= 0) {
+            $this->registerHook(Minz_HookType::EntryBeforeDisplay, [$this->beforeDisplayProcessor, 'process']);
+            $this->registerHook(Minz_HookType::EntryBeforeInsert, [$this->beforeInsertProcessor, 'process']);
+        } else {
+            $this->registerHook('entry_before_display', [$this->beforeDisplayProcessor, 'process']);
+            $this->registerHook('entry_before_insert', [$this->beforeInsertProcessor, 'process']);
+        }
     }
 
     public function handleConfigureAction(): void
