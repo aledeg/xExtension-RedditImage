@@ -1,6 +1,7 @@
 # xExtension-RedditImage
 
-**Note** this extension will stop working on Novembre 13th, 2026. Reddit is killing its RSS feeds.
+**Note** this extension will stop working on Novembre 13th, 2026. Reddit is killing its RSS feeds. Check [Reddit update](https://www.reddit.com/r/modnews/comments/1wubgvt/continuing_our_infrastructure_updates_whats/) for more information.
+
 
 A FreshRSS extension to process Reddit feeds
 
